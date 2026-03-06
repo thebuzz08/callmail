@@ -1,0 +1,41 @@
+{
+  "name": "CallMail - Get a Phone Call for Important Emails",
+  "short_name": "CallMail",
+  "description": "Get a phone call when you receive an important email. CallMail monitors your Gmail and calls you instantly for VIP senders or urgent keywords. Breaks through Do Not Disturb.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/callmail-contact-photo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/callmail-contact-photo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "communication"],
+  "shortcuts": [
+    {
+      "name": "Open App",
+      "short_name": "App",
+      "description": "Get phone calls for important emails",
+      "url": "/app",
+      "icons": [
+        {
+          "src": "/images/callmail-contact-photo.jpg",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
