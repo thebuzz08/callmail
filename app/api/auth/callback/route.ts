@@ -60,11 +60,14 @@ export async function POST(request: Request) {
       name: userData.name,
     })
 
+    // Set cookies to 1 year (like YouTube/Google)
+    const ONE_YEAR = 60 * 60 * 24 * 365
+    
     response.cookies.set("callmail_session", serverSession, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: ONE_YEAR,
       path: "/",
     })
 
@@ -76,7 +79,7 @@ export async function POST(request: Request) {
       httpOnly: false,
       secure: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: ONE_YEAR,
       path: "/",
     })
 
@@ -246,12 +249,15 @@ export async function GET(request: Request) {
 
     const response = NextResponse.redirect(redirectUrl)
 
+    // Set cookies to 1 year (like YouTube/Google)
+    const ONE_YEAR = 60 * 60 * 24 * 365
+    
     // httpOnly cookie with tokens - not accessible by JavaScript
     response.cookies.set("callmail_session", serverSession, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: ONE_YEAR,
       path: "/",
     })
 
@@ -260,7 +266,7 @@ export async function GET(request: Request) {
       httpOnly: false,
       secure: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: ONE_YEAR,
       path: "/",
     })
 

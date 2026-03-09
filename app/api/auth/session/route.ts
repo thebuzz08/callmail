@@ -61,17 +61,35 @@ export async function POST() {
       accessToken: tokenData.access_token,
     })
 
+    // Update client cookie too (for UI display)
+    const clientSession = JSON.stringify({
+      userId: session.userId,
+      email: userData.email,
+      name: userData.name,
+    })
+
     const response = NextResponse.json({
       valid: true,
       email: userData.email,
       name: userData.name,
     })
 
+    // Set cookies to 1 year - refreshed on each successful validation
+    const ONE_YEAR = 60 * 60 * 24 * 365
+
     response.cookies.set("callmail_session", updatedSession, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: ONE_YEAR,
+      path: "/",
+    })
+
+    response.cookies.set("callmail_client", clientSession, {
+      httpOnly: false,
+      secure: true,
+      sameSite: "lax",
+      maxAge: ONE_YEAR,
       path: "/",
     })
 
