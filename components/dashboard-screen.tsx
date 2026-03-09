@@ -74,7 +74,6 @@ export function DashboardScreen({
   const [showCallHistory, setShowCallHistory] = useState(false)
   const [callHistoryLoaded, setCallHistoryLoaded] = useState(false)
   const [callSearchQuery, setCallSearchQuery] = useState("")
-  const [callStatusFilter, setCallStatusFilter] = useState<"all" | "answered" | "missed">("all")
 
   useEffect(() => {
     const loadMonitoringState = async () => {
@@ -292,7 +291,7 @@ export function DashboardScreen({
 
       {/* Phone setup dialog */}
       <Dialog open={showPhoneSetup} onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-md border-border" onPointerDownOutside={(e) => e.preventDefault()}>
+        <DialogContent className="sm:max-w-md glass-card squircle-lg" onPointerDownOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle className="text-center text-xl font-medium">Enter your phone number</DialogTitle>
             <DialogDescription className="text-center">
@@ -309,10 +308,10 @@ export function DashboardScreen({
                 setError("")
               }}
               onKeyDown={(e) => e.key === "Enter" && handleInitialPhoneSetup()}
-              className="rounded-xl border-border bg-background py-6 text-center text-lg"
+              className="rounded-xl py-6 text-center text-lg glass-input squircle-sm"
             />
             {error && <p className="text-center text-sm text-destructive">{error}</p>}
-            <Button className="w-full rounded-full py-6" onClick={handleInitialPhoneSetup}>
+            <Button className="w-full rounded-full py-6 spring-bounce" onClick={handleInitialPhoneSetup}>
               Continue
             </Button>
           </div>
@@ -321,8 +320,8 @@ export function DashboardScreen({
 
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-light tracking-tight text-foreground">CallMail</h1>
-        <Button id="settings-button" variant="ghost" size="icon" onClick={onOpenSettings} className="rounded-full">
+        <h1 className="text-2xl font-light tracking-tight text-foreground text-glass">CallMail</h1>
+        <Button id="settings-button" variant="ghost" size="icon" onClick={onOpenSettings} className="rounded-full glass-button">
           <Settings className="h-5 w-5" />
         </Button>
       </div>
@@ -330,7 +329,7 @@ export function DashboardScreen({
       {/* Status indicator */}
       <div
         id="monitoring-status"
-        className="mb-8 flex items-center justify-between rounded-2xl border border-border p-4"
+        className="mb-8 flex items-center justify-between rounded-2xl p-4 glass-card squircle animate-glass-in"
       >
         <div className="flex items-center gap-3">
           <div
@@ -348,7 +347,7 @@ export function DashboardScreen({
                 size="sm"
                 onClick={handleMonitoringToggle}
                 disabled={!monitoringLoaded}
-                className="rounded-full border-border bg-transparent"
+                className="rounded-full glass-button spring-bounce"
               >
                 {!hasActiveSubscription && !isMonitoring ? "Subscribe to Start" : isMonitoring ? "Pause" : "Resume"}
               </Button>
@@ -496,38 +495,6 @@ export function DashboardScreen({
                   className="pl-9 rounded-xl"
                 />
               </div>
-              <div className="flex rounded-xl border border-border overflow-hidden">
-                <button
-                  onClick={() => setCallStatusFilter("all")}
-                  className={`px-3 py-2 text-xs font-medium transition-colors ${
-                    callStatusFilter === "all"
-                      ? "bg-foreground text-background"
-                      : "bg-transparent text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => setCallStatusFilter("answered")}
-                  className={`px-3 py-2 text-xs font-medium transition-colors ${
-                    callStatusFilter === "answered"
-                      ? "bg-foreground text-background"
-                      : "bg-transparent text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  Answered
-                </button>
-                <button
-                  onClick={() => setCallStatusFilter("missed")}
-                  className={`px-3 py-2 text-xs font-medium transition-colors ${
-                    callStatusFilter === "missed"
-                      ? "bg-foreground text-background"
-                      : "bg-transparent text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  Missed
-                </button>
-              </div>
             </div>
 
             {/* Call List */}
@@ -537,20 +504,11 @@ export function DashboardScreen({
               <p className="text-center text-sm text-muted-foreground py-4">No calls yet</p>
             ) : (() => {
               const filteredCalls = callHistory.filter((call) => {
-                // Search filter
+                // Search filter only
                 const query = callSearchQuery.toLowerCase()
-                const matchesSearch = !query || 
+                return !query || 
                   call.from_email.toLowerCase().includes(query) ||
                   call.subject.toLowerCase().includes(query)
-                
-                // Status filter
-                const isAnswered = call.status === "completed" || call.status === "human_answered"
-                const matchesStatus = 
-                  callStatusFilter === "all" ||
-                  (callStatusFilter === "answered" && isAnswered) ||
-                  (callStatusFilter === "missed" && !isAnswered)
-                
-                return matchesSearch && matchesStatus
               })
 
               if (filteredCalls.length === 0) {
@@ -563,24 +521,9 @@ export function DashboardScreen({
 
               return filteredCalls.map((call) => (
                 <div key={call.id} className="rounded-xl border border-border p-4 space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-foreground truncate max-w-[200px]">
-                      {call.from_email}
-                    </span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      call.status === "completed" || call.status === "human_answered"
-                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                        : call.status === "initial" || call.status === "retrying"
-                          ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                          : "bg-muted text-muted-foreground"
-                    }`}>
-                      {call.status === "completed" || call.status === "human_answered"
-                        ? "Answered"
-                        : call.status === "initial" || call.status === "retrying"
-                          ? "Calling..."
-                          : "Missed"}
-                    </span>
-                  </div>
+                  <span className="text-sm font-medium text-foreground truncate block">
+                    {call.from_email}
+                  </span>
                   <p className="text-xs text-muted-foreground truncate">{call.subject}</p>
                   <span className="text-xs text-muted-foreground">
                     {new Date(call.created_at).toLocaleDateString(undefined, {

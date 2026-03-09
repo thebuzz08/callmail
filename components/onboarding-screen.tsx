@@ -99,7 +99,7 @@ END:VCARD`
                 alt="CallMail Logo"
                 width={80}
                 height={80}
-                className="rounded-3xl"
+                className="rounded-3xl shadow-glass animate-glass-in"
               />
               <span className="text-3xl font-light tracking-tight text-foreground">CallMail</span>
             </div>
@@ -128,7 +128,7 @@ END:VCARD`
         // VIP Contacts
         return (
           <div className="flex flex-1 flex-col items-center justify-center px-8">
-            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
+            <div className="w-16 h-16 rounded-full glass-card flex items-center justify-center mb-6 animate-glass-in">
               <Users className="w-8 h-8 text-foreground" />
             </div>
             <h2 className="mb-4 text-center text-2xl font-medium text-foreground">VIP Contacts</h2>
@@ -136,7 +136,7 @@ END:VCARD`
               Add email addresses of important people. Get called whenever they email you.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-2">
-              <span className="px-3 py-1.5 bg-muted rounded-full text-sm">boss@company.com</span>
+              <span className="px-3 py-1.5 glass rounded-full text-sm">boss@company.com</span>
               <span className="px-3 py-1.5 bg-muted rounded-full text-sm">client@work.com</span>
             </div>
           </div>
@@ -243,9 +243,9 @@ END:VCARD`
       {renderSlide()}
 
       {/* Bottom section */}
-      <div className="px-8 pb-12">
+      <div className="px-8 pb-12 safe-bottom">
         <Button
-          className="w-full rounded-full py-6 text-base font-medium"
+          className="w-full rounded-full py-6 text-base font-medium spring-bounce"
           onClick={nextSlide}
           disabled={currentSlide === 6 && !contactAdded}
         >

@@ -106,7 +106,7 @@ export function SubscriptionGate({ userEmail, onBack, onSkip, onSubscriptionComp
 
         {/* Plan Toggle */}
         <div className="flex justify-center">
-          <div className="inline-flex rounded-full border border-border p-1 bg-muted/30">
+          <div className="inline-flex rounded-full p-1 glass squircle-sm">
             <button
               onClick={() => setSelectedPlan("monthly")}
               className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
@@ -132,7 +132,7 @@ export function SubscriptionGate({ userEmail, onBack, onSkip, onSubscriptionComp
         </div>
 
         {/* Pricing Card */}
-        <div className="rounded-2xl border border-border p-6 space-y-6">
+        <div className="rounded-2xl p-6 space-y-6 glass-card squircle animate-glass-in">
           <div className="text-center space-y-1">
             <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Pro Plan</p>
             {selectedPlan === "monthly" ? (
@@ -167,7 +167,7 @@ export function SubscriptionGate({ userEmail, onBack, onSkip, onSubscriptionComp
 
           {/* CTA */}
           <Button
-            className="w-full rounded-full py-6 text-base"
+            className="w-full rounded-full py-6 text-base spring-bounce glow-accent"
             onClick={handleSubscribe}
             disabled={isLoading}
           >
