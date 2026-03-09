@@ -1,13 +1,15 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Check, Zap } from "lucide-react"
-import { useState } from "react"
+import { Check, Zap, RotateCcw } from "lucide-react"
+import { useState, useEffect } from "react"
+import { isNativeApp, getPlatform, purchaseProduct, restorePurchases, PRODUCTS } from "@/lib/native-bridge"
 
 interface SubscriptionGateProps {
   userEmail?: string
   onBack?: () => void
   onSkip?: () => void
+  onSubscriptionComplete?: () => void
 }
 
 const FEATURES = [
@@ -20,26 +22,72 @@ const FEATURES = [
   "Call history and data export",
 ]
 
-export function SubscriptionGate({ userEmail, onBack, onSkip }: SubscriptionGateProps) {
+export function SubscriptionGate({ userEmail, onBack, onSkip, onSubscriptionComplete }: SubscriptionGateProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isRestoring, setIsRestoring] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<"monthly" | "annual">("annual")
+  const [isNative, setIsNative] = useState(false)
+  const [platform, setPlatform] = useState<"ios" | "android" | "web">("web")
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Check if running in native app on mount
+    setIsNative(isNativeApp())
+    setPlatform(getPlatform())
+  }, [])
 
   const handleSubscribe = async () => {
     setIsLoading(true)
+    setError(null)
+    
     try {
-      const response = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: selectedPlan }),
-      })
-      const data = await response.json()
-      if (data.url) {
-        window.location.href = data.url
+      // If in native iOS/Android app, use native IAP
+      if (isNative && platform !== "web") {
+        const productId = PRODUCTS[platform][selectedPlan]
+        const result = await purchaseProduct(productId)
+        
+        if (result.success) {
+          // Purchase successful, subscription should be active
+          onSubscriptionComplete?.()
+          window.location.reload()
+        } else {
+          setError(result.error || "Purchase failed")
+        }
+      } else {
+        // Web: use Stripe checkout
+        const response = await fetch("/api/stripe/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan: selectedPlan }),
+        })
+        const data = await response.json()
+        if (data.url) {
+          window.location.href = data.url
+        }
       }
     } catch (e) {
-      console.error("Failed to create checkout:", e)
+      console.error("Failed to process subscription:", e)
+      setError("Something went wrong. Please try again.")
     }
     setIsLoading(false)
+  }
+
+  const handleRestore = async () => {
+    setIsRestoring(true)
+    setError(null)
+    
+    try {
+      const result = await restorePurchases()
+      if (result.success) {
+        onSubscriptionComplete?.()
+        window.location.reload()
+      } else {
+        setError(result.error || "No purchases found to restore")
+      }
+    } catch (e) {
+      setError("Failed to restore purchases")
+    }
+    setIsRestoring(false)
   }
 
   return (
@@ -126,9 +174,27 @@ export function SubscriptionGate({ userEmail, onBack, onSkip }: SubscriptionGate
             {isLoading ? "Loading..." : "Start Free Trial"}
           </Button>
 
+          {error && (
+            <p className="text-center text-sm text-red-500">
+              {error}
+            </p>
+          )}
+
           <p className="text-center text-xs text-muted-foreground">
-            {"You won't be charged until your 7-day trial ends. Cancel anytime from Settings."}
+            {"You won't be charged until your 7-day trial ends. Cancel anytime."}
           </p>
+
+          {/* Restore purchases - only show on native iOS/Android */}
+          {isNative && platform !== "web" && (
+            <button
+              onClick={handleRestore}
+              disabled={isRestoring}
+              className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+            >
+              <RotateCcw className={`h-4 w-4 ${isRestoring ? "animate-spin" : ""}`} />
+              {isRestoring ? "Restoring..." : "Restore Purchases"}
+            </button>
+          )}
         </div>
 
         {/* Skip option */}
