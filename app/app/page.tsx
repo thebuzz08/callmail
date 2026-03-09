@@ -534,6 +534,10 @@ export default function AppPage() {
           userEmail={userSession?.email} 
           onBack={handleLogout}
           onSkip={() => setCurrentScreen("dashboard")}
+          onSubscriptionComplete={() => {
+            fetchUserData()
+            setCurrentScreen("dashboard")
+          }}
         />
       )}
       {currentScreen === "dashboard" && (
