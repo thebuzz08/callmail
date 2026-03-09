@@ -193,7 +193,7 @@ export default function AppPage() {
         }
       }
 
-      // Verify session is still valid server-side
+      // Verify session is still valid server-side and refresh tokens if needed
       if (session) {
         try {
           const response = await fetch("/api/auth/session", {
@@ -211,11 +211,22 @@ export default function AppPage() {
                 name: data.name,
               }
             } else {
+              // Only clear session if server explicitly says it's invalid
+              // (not on network errors or other issues)
+              console.log("[v0] Session invalid, clearing:", data.error)
               session = null
             }
+          } else if (response.status === 401) {
+            // Explicit auth failure - clear session
+            console.log("[v0] Session expired (401), clearing")
+            session = null
           }
+          // On other errors (500, network), keep the session and try anyway
+          // The API calls will fail gracefully if the token is actually invalid
         } catch (e) {
-          console.error("Failed to verify session:", e)
+          // Network error - don't log out, just continue with existing session
+          // User may just have spotty connection
+          console.log("[v0] Session check failed (network), continuing with cached session")
         }
       }
 
