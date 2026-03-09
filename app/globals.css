@@ -132,3 +132,242 @@
     padding-right: env(safe-area-inset-right);
   }
 }
+
+/* ===== Apple Liquid Glass Design System ===== */
+
+/* Glass panel - translucent with blur */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass {
+  background: rgba(30, 30, 30, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Glass card - more prominent */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.dark .glass-card {
+  background: rgba(40, 40, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Glass button */
+.glass-button {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.2s cubic-bezier(0.33, 1, 0.67, 1);
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.02);
+}
+
+.glass-button:active {
+  transform: scale(0.98);
+}
+
+.dark .glass-button {
+  background: rgba(60, 60, 60, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-button:hover {
+  background: rgba(80, 80, 80, 0.7);
+}
+
+/* Glass input */
+.glass-input {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.2s cubic-bezier(0.33, 1, 0.67, 1);
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+}
+
+.dark .glass-input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+}
+
+/* Glass navbar - floating style */
+.glass-navbar {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .glass-navbar {
+  background: rgba(20, 20, 20, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Glass tab bar - iOS style */
+.glass-tabbar {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .glass-tabbar {
+  background: rgba(30, 30, 30, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Apple continuous corners (squircle) */
+.squircle {
+  border-radius: 22px;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+.squircle-sm {
+  border-radius: 14px;
+}
+
+.squircle-lg {
+  border-radius: 32px;
+}
+
+/* Fluid spring animations */
+@keyframes glass-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes glass-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glass-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+}
+
+.animate-glass-in {
+  animation: glass-fade-in 0.4s cubic-bezier(0.33, 1, 0.67, 1) forwards;
+}
+
+.animate-glass-slide {
+  animation: glass-slide-up 0.5s cubic-bezier(0.33, 1, 0.67, 1) forwards;
+}
+
+/* iOS-style spring timing */
+.spring-bounce {
+  transition-timing-function: cubic-bezier(0.33, 1.4, 0.67, 1);
+}
+
+/* Layered shadows for depth */
+.shadow-glass {
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+.dark .shadow-glass {
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.25),
+    0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* SF Pro style text rendering */
+.text-glass {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Vibrancy effect for overlays */
+.vibrancy {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}
+
+.dark .vibrancy {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+}
+
+/* Accent glow for interactive elements */
+.glow-accent {
+  box-shadow: 0 0 20px rgba(255, 149, 0, 0.3);
+}
+
+/* iOS safe area helpers */
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 20px);
+}
+
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 34px);
+}
+
+/* Median/WebView specific adjustments */
+@supports (-webkit-touch-callout: none) {
+  /* iOS specific overrides */
+  .glass, .glass-card, .glass-navbar, .glass-tabbar {
+    transform: translateZ(0);
+  }
+}

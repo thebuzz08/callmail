@@ -291,7 +291,7 @@ export function DashboardScreen({
 
       {/* Phone setup dialog */}
       <Dialog open={showPhoneSetup} onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-md border-border" onPointerDownOutside={(e) => e.preventDefault()}>
+        <DialogContent className="sm:max-w-md glass-card squircle-lg" onPointerDownOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle className="text-center text-xl font-medium">Enter your phone number</DialogTitle>
             <DialogDescription className="text-center">
@@ -308,10 +308,10 @@ export function DashboardScreen({
                 setError("")
               }}
               onKeyDown={(e) => e.key === "Enter" && handleInitialPhoneSetup()}
-              className="rounded-xl border-border bg-background py-6 text-center text-lg"
+              className="rounded-xl py-6 text-center text-lg glass-input squircle-sm"
             />
             {error && <p className="text-center text-sm text-destructive">{error}</p>}
-            <Button className="w-full rounded-full py-6" onClick={handleInitialPhoneSetup}>
+            <Button className="w-full rounded-full py-6 spring-bounce" onClick={handleInitialPhoneSetup}>
               Continue
             </Button>
           </div>
@@ -320,8 +320,8 @@ export function DashboardScreen({
 
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-light tracking-tight text-foreground">CallMail</h1>
-        <Button id="settings-button" variant="ghost" size="icon" onClick={onOpenSettings} className="rounded-full">
+        <h1 className="text-2xl font-light tracking-tight text-foreground text-glass">CallMail</h1>
+        <Button id="settings-button" variant="ghost" size="icon" onClick={onOpenSettings} className="rounded-full glass-button">
           <Settings className="h-5 w-5" />
         </Button>
       </div>
@@ -329,7 +329,7 @@ export function DashboardScreen({
       {/* Status indicator */}
       <div
         id="monitoring-status"
-        className="mb-8 flex items-center justify-between rounded-2xl border border-border p-4"
+        className="mb-8 flex items-center justify-between rounded-2xl p-4 glass-card squircle animate-glass-in"
       >
         <div className="flex items-center gap-3">
           <div
@@ -347,7 +347,7 @@ export function DashboardScreen({
                 size="sm"
                 onClick={handleMonitoringToggle}
                 disabled={!monitoringLoaded}
-                className="rounded-full border-border bg-transparent"
+                className="rounded-full glass-button spring-bounce"
               >
                 {!hasActiveSubscription && !isMonitoring ? "Subscribe to Start" : isMonitoring ? "Pause" : "Resume"}
               </Button>
