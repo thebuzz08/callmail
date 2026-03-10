@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Loader2, Check } from "lucide-react"
 import type { UserSession } from "@/app/app/page"
+import { isNativeApp, openExternalUrl } from "@/lib/native-bridge"
 
 interface LoginScreenProps {
   onNext: (session: UserSession) => void
@@ -15,13 +16,15 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
+  // Check for OAuth callback on mount and when returning from OAuth
+  const checkForAuthCallback = useCallback(async () => {
     const params = new URLSearchParams(window.location.search)
     const code = params.get("code")
     const errorParam = params.get("error")
 
     if (errorParam) {
       setError("Google login was cancelled or failed. Please try again.")
+      setIsLoading(false)
       window.history.replaceState({}, "", window.location.pathname)
       return
     }
@@ -29,31 +32,54 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
     if (code) {
       setIsLoading(true)
 
-      fetch("/api/auth/callback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            setError(data.error)
-            setIsLoading(false)
-          } else {
-            onNext({
-              email: data.email,
-              name: data.name,
-            })
-          }
-          window.history.replaceState({}, "", window.location.pathname)
+      try {
+        const res = await fetch("/api/auth/callback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
         })
-        .catch(() => {
-          setError("Failed to complete login. Please try again.")
+        const data = await res.json()
+        
+        if (data.error) {
+          setError(data.error)
           setIsLoading(false)
-          window.history.replaceState({}, "", window.location.pathname)
-        })
+        } else {
+          onNext({
+            email: data.email,
+            name: data.name,
+          })
+        }
+      } catch {
+        setError("Failed to complete login. Please try again.")
+        setIsLoading(false)
+      }
+      window.history.replaceState({}, "", window.location.pathname)
     }
   }, [onNext])
+
+  useEffect(() => {
+    checkForAuthCallback()
+    
+    // For WebView apps: listen for when the app becomes visible again
+    // This handles the case where OAuth opens externally and returns
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        checkForAuthCallback()
+      }
+    }
+    
+    const handleFocus = () => {
+      checkForAuthCallback()
+    }
+    
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    window.addEventListener("focus", handleFocus)
+    
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      window.removeEventListener("focus", handleFocus)
+    }
+  }, [checkForAuthCallback])
 
   const handleGoogleLogin = async () => {
     setIsLoading(true)
@@ -64,7 +90,14 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
       const data = await res.json()
 
       if (data.url) {
-        window.location.href = data.url
+        // For native apps, open in system browser so Google OAuth works properly
+        // The callback will redirect back and Universal Links will return to the app
+        if (isNativeApp()) {
+          openExternalUrl(data.url)
+        } else {
+          // Web: normal redirect
+          window.location.href = data.url
+        }
       } else {
         setError("Failed to initiate Google login")
         setIsLoading(false)

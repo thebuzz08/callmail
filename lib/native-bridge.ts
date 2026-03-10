@@ -25,6 +25,40 @@ export function isNativeApp(): boolean {
   return false
 }
 
+// Open URL using Median's openExternal (opens in system browser, can return via Universal Links)
+export function openExternalUrl(url: string): void {
+  if (typeof window === "undefined") return
+  
+  // Median.co API for opening external URLs
+  if ((window as any).median?.share?.open) {
+    (window as any).median.share.open({ url })
+    return
+  }
+  
+  // GoNative API
+  if ((window as any).gonative?.open) {
+    (window as any).gonative.open({ url })
+    return
+  }
+  
+  // Fallback: window.open for external browser
+  window.open(url, "_blank")
+}
+
+// Navigate to URL within the app's WebView
+export function navigateInApp(url: string): void {
+  if (typeof window === "undefined") return
+  
+  // Median.co API for internal navigation
+  if ((window as any).median?.webview?.navigate) {
+    (window as any).median.webview.navigate({ url })
+    return
+  }
+  
+  // Fallback: direct navigation
+  window.location.href = url
+}
+
 // Detect platform
 export function getPlatform(): "ios" | "android" | "web" {
   if (typeof window === "undefined") return "web"
