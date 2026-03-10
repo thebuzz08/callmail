@@ -3,12 +3,12 @@
     "apps": [],
     "details": [
       {
-        "appID": "TEAM_ID.co.median.ios.qddwkjj",
+        "appID": "7N54XHKAPW.co.median.ios.qddwkjj",
         "paths": ["/app/*", "/auth/*"]
       }
     ]
   },
   "webcredentials": {
-    "apps": ["TEAM_ID.co.median.ios.qddwkjj"]
+    "apps": ["7N54XHKAPW.co.median.ios.qddwkjj"]
   }
 }
