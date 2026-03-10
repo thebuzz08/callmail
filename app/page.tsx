@@ -18,9 +18,15 @@ export default function HomePage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Mail className="w-10 h-10 text-muted-foreground" aria-hidden="true" />
-            <span className="text-2xl font-bold tracking-tight">CallMail</span>
+          <Link href="/" className="flex items-center gap-0">
+            <Image
+              src="/images/callmail-contact-photo.jpg"
+              alt="CallMail - Get a Phone Call for Important Emails"
+              width={108}
+              height={108}
+              className="rounded-2xl"
+            />
+            <span className="text-3xl font-bold tracking-tight">CallMail</span>
           </Link>
 
           {/* Desktop nav */}
@@ -306,10 +312,16 @@ export default function HomePage() {
       <footer className="border-t border-border py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <Link href="/" className="flex items-center gap-2">
-                <Mail className="w-6 h-6 text-muted-foreground" aria-hidden="true" />
-                <span className="font-semibold">CallMail</span>
-              </Link>
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/images/callmail-contact-photo.jpg"
+                alt="CallMail Logo"
+                width={32}
+                height={32}
+                className="rounded-xl"
+              />
+              <span className="font-semibold">CallMail</span>
+            </Link>
 
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
               <Link href="/privacy" className="hover:text-foreground transition-colors">
