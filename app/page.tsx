@@ -18,13 +18,13 @@ export default function HomePage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-0">
+          <Link href="/" className="flex items-center">
             <Image
               src="/images/callmail-contact-photo.jpg"
               alt="CallMail - Get a Phone Call for Important Emails"
               width={108}
               height={108}
-              className="rounded-2xl"
+              className="rounded-2xl -ml-6 -mr-4"
             />
             <span className="text-3xl font-bold tracking-tight">CallMail</span>
           </Link>
@@ -63,33 +63,8 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section - Updated H1 and copy for SEO */}
-      <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        {/* Brutalist grid background */}
-        <div className="absolute inset-0 -z-10">
-          <div 
-            className="absolute inset-0 opacity-[0.08]"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, currentColor 1px, transparent 1px),
-                linear-gradient(to bottom, currentColor 1px, transparent 1px)
-              `,
-              backgroundSize: '60px 60px'
-            }}
-          />
-          <div 
-            className="absolute inset-0 opacity-[0.06]"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, currentColor 1px, transparent 1px),
-                linear-gradient(to bottom, currentColor 1px, transparent 1px)
-              `,
-              backgroundSize: '15px 15px'
-            }}
-          />
-          {/* Radial fade */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,var(--background)_70%)]" />
-        </div>
+      <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-grid.jpg)', backgroundAttachment: 'fixed' }}>
+        <div className="absolute inset-0 -z-10 bg-white/80" />
 
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 border border-border bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm mb-8">
@@ -206,22 +181,8 @@ export default function HomePage() {
       </section>
 
       {/* Features - Added keyword-rich H2 and feature descriptions */}
-      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden">
-        {/* Subtle diagonal lines */}
-        <div className="absolute inset-0 -z-10 opacity-[0.08]">
-          <div 
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `repeating-linear-gradient(
-                -45deg,
-                currentColor,
-                currentColor 1px,
-                transparent 1px,
-                transparent 40px
-              )`
-            }}
-          />
-        </div>
+      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-diagonal.jpg)', backgroundAttachment: 'fixed' }}>
+        <div className="absolute inset-0 -z-10 bg-muted/40" />
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">Email to Phone Call Features</h2>
@@ -283,14 +244,8 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section - Updated copy for SEO */}
-      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        {/* Concentric circles background */}
-        <div className="absolute inset-0 -z-10 flex items-center justify-center opacity-[0.08]">
-          <div className="w-[800px] h-[800px] rounded-full border border-current" />
-          <div className="absolute w-[600px] h-[600px] rounded-full border border-current" />
-          <div className="absolute w-[400px] h-[400px] rounded-full border border-current" />
-          <div className="absolute w-[200px] h-[200px] rounded-full border border-current" />
-        </div>
+      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-circles.jpg)', backgroundAttachment: 'fixed' }}>
+        <div className="absolute inset-0 -z-10 bg-white/85" />
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
             Ready to get phone calls for important emails?
@@ -312,16 +267,16 @@ export default function HomePage() {
       <footer className="border-t border-border py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <Link href="/" className="flex items-center gap-3">
-              <Image
-                src="/images/callmail-contact-photo.jpg"
-                alt="CallMail Logo"
-                width={32}
-                height={32}
-                className="rounded-xl"
-              />
-              <span className="font-semibold">CallMail</span>
-            </Link>
+              <Link href="/" className="flex items-center gap-1">
+                <Image
+                  src="/images/callmail-contact-photo.jpg"
+                  alt="CallMail Logo"
+                  width={64}
+                  height={64}
+                  className="rounded-xl -ml-1 -mr-4"
+                />
+                <span className="font-semibold">CallMail</span>
+              </Link>
 
             <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
               <Link href="/privacy" className="hover:text-foreground transition-colors">
