@@ -2,7 +2,11 @@
  * Native Bridge for Median.co / GoNative.io WebView apps
  * Handles communication between web app and native iOS/Android shell
  * 
- * Median documentation: https://median.co/docs/iap
+ * NOTE: This uses Median's native code injection for StoreKit access,
+ * NOT the paid IAP plugin. The StoreKit bridge is injected via Custom JavaScript
+ * in Median dashboard (see docs/median-storekit-bridge.js).
+ * 
+ * Median documentation: https://median.co/docs
  */
 
 // Detect if running inside a native app
@@ -140,17 +144,33 @@ export async function getProducts(): Promise<IAPProduct[]> {
 
 // Purchase a product
 export async function purchaseProduct(productId: string): Promise<IAPPurchaseResult> {
-  return new Promise((resolve) => {
-    if (!isNativeApp()) {
-      resolve({ success: false, error: "Not running in native app" })
-      return
-    }
+  if (!isNativeApp()) {
+    return { success: false, error: "Not running in native app" }
+  }
 
-    // Median.co API
-    if ((window as any).median?.iap) {
+  // Determine plan type from product ID
+  const planType = productId.includes("monthly") ? "monthly" : "annual"
+
+  // Use our custom StoreKit bridge (injected via Median Custom JavaScript)
+  // See docs/median-storekit-bridge.js
+  if ((window as any).CallMailIAP) {
+    try {
+      const result = await (window as any).CallMailIAP.purchase(planType)
+      return {
+        success: result.success,
+        productId: productId,
+        error: result.error,
+      }
+    } catch (e: any) {
+      return { success: false, error: e.message || "Purchase failed" }
+    }
+  }
+
+  // Fallback: Median.co paid IAP plugin (if they upgrade later)
+  if ((window as any).median?.iap) {
+    return new Promise((resolve) => {
       (window as any).median.iap.purchase(productId, async (result: any) => {
         if (result.success && result.receipt) {
-          // Validate receipt with our server
           try {
             const response = await fetch("/api/apple/validate-receipt", {
               method: "POST",
@@ -175,57 +195,34 @@ export async function purchaseProduct(productId: string): Promise<IAPPurchaseRes
           resolve({ success: false, error: result.error || "Purchase failed" })
         }
       })
-      return
-    }
+    })
+  }
 
-    // GoNative API
-    if ((window as any).gonative?.iap) {
-      (window as any).gonative.iap.purchase({
-        productId,
-        callback: async (result: any) => {
-          if (result.success && result.receipt) {
-            try {
-              const response = await fetch("/api/apple/validate-receipt", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ receiptData: result.receipt }),
-              })
-              const data = await response.json()
-              if (data.success) {
-                resolve({
-                  success: true,
-                  productId: result.productId,
-                  transactionId: result.transactionId,
-                  receipt: result.receipt,
-                })
-              } else {
-                resolve({ success: false, error: data.error || "Receipt validation failed" })
-              }
-            } catch (e) {
-              resolve({ success: false, error: "Failed to validate receipt" })
-            }
-          } else {
-            resolve({ success: false, error: result.error || "Purchase failed" })
-          }
-        },
-      })
-      return
-    }
-
-    resolve({ success: false, error: "No IAP handler found" })
-  })
+  return { success: false, error: "No IAP handler found. Make sure the StoreKit bridge is loaded." }
 }
 
 // Restore previous purchases
 export async function restorePurchases(): Promise<IAPPurchaseResult> {
-  return new Promise((resolve) => {
-    if (!isNativeApp()) {
-      resolve({ success: false, error: "Not running in native app" })
-      return
-    }
+  if (!isNativeApp()) {
+    return { success: false, error: "Not running in native app" }
+  }
 
-    // Median.co API
-    if ((window as any).median?.iap) {
+  // Use our custom StoreKit bridge (injected via Median Custom JavaScript)
+  if ((window as any).CallMailIAP) {
+    try {
+      const result = await (window as any).CallMailIAP.restore()
+      return {
+        success: result.success,
+        error: result.error,
+      }
+    } catch (e: any) {
+      return { success: false, error: e.message || "Restore failed" }
+    }
+  }
+
+  // Fallback: Median.co paid IAP plugin
+  if ((window as any).median?.iap) {
+    return new Promise((resolve) => {
       (window as any).median.iap.restore(async (result: any) => {
         if (result.success && result.receipt) {
           try {
@@ -247,37 +244,8 @@ export async function restorePurchases(): Promise<IAPPurchaseResult> {
           resolve({ success: false, error: result.error || "No purchases to restore" })
         }
       })
-      return
-    }
+    })
+  }
 
-    // GoNative API
-    if ((window as any).gonative?.iap) {
-      (window as any).gonative.iap.restore({
-        callback: async (result: any) => {
-          if (result.success && result.receipt) {
-            try {
-              const response = await fetch("/api/apple/validate-receipt", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ receiptData: result.receipt }),
-            })
-              const data = await response.json()
-              resolve({
-                success: data.success,
-                receipt: result.receipt,
-                error: data.error,
-              })
-            } catch (e) {
-              resolve({ success: false, error: "Failed to validate receipt" })
-            }
-          } else {
-            resolve({ success: false, error: result.error || "No purchases to restore" })
-          }
-        },
-      })
-      return
-    }
-
-    resolve({ success: false, error: "No IAP handler found" })
-  })
+  return { success: false, error: "No IAP handler found. Make sure the StoreKit bridge is loaded." }
 }
