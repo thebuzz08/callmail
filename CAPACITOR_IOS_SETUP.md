@@ -213,9 +213,53 @@ Your Signing & Capabilities tab should show:
 
 ---
 
-# PART 5: Build and Run on Your iPhone
+# PART 5: Add App Icon
 
-## Step 5.1: Connect Your iPhone
+## Step 5.1: Prepare Your Icon
+
+You need a 1024x1024 PNG version of your logo. Use your existing CallMail logo.
+
+## Step 5.2: Add Icon in Xcode
+
+1. In Xcode's left sidebar, expand **App** → **App** → **Assets**
+2. Click on **Assets.xcassets**
+3. In the middle panel, click **AppIcon**
+4. You'll see a single square that says "1024x1024"
+5. **Drag and drop** your 1024x1024 PNG logo onto that square
+6. Xcode will automatically generate all the other icon sizes
+
+---
+
+# PART 6: Set Up Push Notifications (For Weekly Digest)
+
+## Step 6.1: Create APNs Key in Apple Developer Portal
+
+1. Go to https://developer.apple.com/account
+2. Click **Certificates, Identifiers & Profiles**
+3. Click **Keys** in the left sidebar
+4. Click the **+** button to create a new key
+5. **Key Name:** `CallMail Push Notifications`
+6. Check **Apple Push Notifications service (APNs)**
+7. Click **Continue** → **Register**
+8. **IMPORTANT:** Download the .p8 file immediately (you can only download it ONCE)
+9. Note the **Key ID** shown on the page (looks like `ABC123DEFG`)
+
+## Step 6.2: Add Environment Variables in Vercel
+
+Go to your Vercel project settings and add these environment variables:
+
+| Variable | Value |
+|----------|-------|
+| `APNS_KEY_ID` | The Key ID from step 6.1 (e.g., `ABC123DEFG`) |
+| `APNS_KEY` | The entire contents of your .p8 file (copy/paste including the `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----` lines) |
+
+Your Team ID (`7N54XHKAPW`) is already used elsewhere in the code.
+
+---
+
+# PART 7: Build and Run on Your iPhone
+
+## Step 7.1: Connect Your iPhone
 
 1. Connect your iPhone 13 Pro to your Mac with a USB/Lightning cable
 2. If your iPhone asks "Trust This Computer?", tap **Trust** and enter your passcode
@@ -223,9 +267,9 @@ Your Signing & Capabilities tab should show:
 4. Click that dropdown
 5. Under **iOS Devices**, select your **iPhone** (it should show your iPhone's name)
 
-## Step 5.2: Build and Run
+## Step 7.2: Build and Run
 
-1. Press **Cmd + R** (or click the Play ▶ button in the top left)
+1. Press **Cmd + R** (or click the Play button in the top left)
 2. The first build takes a few minutes
 3. You may see a prompt on your Mac asking for your login password - enter it
 4. On your iPhone, you may see:
@@ -233,7 +277,7 @@ Your Signing & Capabilities tab should show:
    - **"Untrusted Developer"** → Go to Settings > General > VPN & Device Management → Tap your developer email → Tap "Trust"
 5. The app will install and launch on your iPhone
 
-## Step 5.3: Test Google Sign-In
+## Step 7.3: Test Google Sign-In
 
 1. In the app, tap **Sign in with Google**
 2. A web page will open for Google sign-in
@@ -241,7 +285,7 @@ Your Signing & Capabilities tab should show:
 4. Grant the permissions requested
 5. You should be redirected back to the app and see your dashboard
 
-## Step 5.4: Set Up Sandbox Testing for Purchases
+## Step 7.4: Set Up Sandbox Testing for Purchases
 
 1. On your iPhone, open **Settings**
 2. Scroll down and tap **App Store**
@@ -250,7 +294,7 @@ Your Signing & Capabilities tab should show:
    - If you haven't created one: Go to App Store Connect → Users and Access → Sandbox → Testers → Add (+)
    - Create a tester with a fake email (doesn't need to be real)
 
-## Step 5.5: Test In-App Purchases
+## Step 7.5: Test In-App Purchases
 
 1. In the CallMail app, try to subscribe or access a pro feature
 2. Apple's sandbox payment sheet should appear
@@ -260,16 +304,16 @@ Your Signing & Capabilities tab should show:
 
 ---
 
-# PART 6: Submit to TestFlight
+# PART 8: Submit to TestFlight
 
-## Step 6.1: Archive the App
+## Step 8.1: Archive the App
 
 1. In Xcode, click the device dropdown at the top and select **"Any iOS Device (arm64)"** (not a specific device)
 2. Go to menu **Product** → **Archive**
 3. Wait for the archive to build (may take a few minutes)
 4. When complete, the **Organizer** window opens automatically
 
-## Step 6.2: Upload to App Store Connect
+## Step 8.2: Upload to App Store Connect
 
 1. In the Organizer window, make sure your archive is selected
 2. Click **Distribute App**
@@ -281,7 +325,7 @@ Your Signing & Capabilities tab should show:
 8. Wait for the upload to complete (may take several minutes)
 9. Click **Done**
 
-## Step 6.3: Configure TestFlight
+## Step 8.3: Configure TestFlight
 
 1. Go to https://appstoreconnect.apple.com
 2. Click your app → Click **TestFlight** tab
@@ -290,7 +334,7 @@ Your Signing & Capabilities tab should show:
 5. If prompted, click **Manage Missing Compliance** and answer the export compliance question (usually "No" for standard encryption)
 6. The build should now be available for testing
 
-## Step 6.4: Add Testers
+## Step 8.4: Add Testers
 
 **Internal Testing (your team):**
 1. Click **Internal Testing** → **App Store Connect Users**
@@ -302,7 +346,7 @@ Your Signing & Capabilities tab should show:
 
 ---
 
-# PART 7: Submit to App Store (When Ready)
+# PART 9: Submit to App Store (When Ready)
 
 1. In App Store Connect, click your app
 2. Click the **App Store** tab
