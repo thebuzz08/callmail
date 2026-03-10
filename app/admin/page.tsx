@@ -17,6 +17,7 @@ import {
   ChevronUp,
   ChevronDown,
   AlertTriangle,
+  Clock,
 } from "lucide-react"
 
 interface VipContact {
@@ -72,6 +73,25 @@ interface SuspiciousActivity {
   } | null
 }
 
+interface QueueMetrics {
+  longestProcessingTimeMs: number
+  longestProcessingTimeSec: number
+  avgProcessingTimeMs: number
+  avgProcessingTimeSec: number
+  totalJobsLast24h: number
+  totalCallsLast24h: number
+  totalUsersCheckedLast24h: number
+  percentOfLimit: number
+  recentJobs: Array<{
+    id: string
+    usersChecked: number
+    callsTriggered: number
+    processingTimeMs: number
+    processingTimeSec: number
+    createdAt: string
+  }>
+}
+
 export default function AdminPage() {
   const router = useRouter()
   const [users, setUsers] = useState<UserData[]>([])
@@ -90,11 +110,25 @@ export default function AdminPage() {
   const [showAdminsOnly, setShowAdminsOnly] = useState(false)
   const [suspiciousActivity, setSuspiciousActivity] = useState<SuspiciousActivity[]>([])
   const [suspiciousLoading, setSuspiciousLoading] = useState(false)
+  const [queueMetrics, setQueueMetrics] = useState<QueueMetrics | null>(null)
 
   useEffect(() => {
     checkAdminAndFetchUsers()
     fetchSuspiciousActivity()
+    fetchQueueMetrics()
   }, [])
+
+  const fetchQueueMetrics = async () => {
+    try {
+      const response = await fetch("/api/admin/queue-metrics")
+      if (response.ok) {
+        const data = await response.json()
+        setQueueMetrics(data)
+      }
+    } catch (error) {
+      console.error("Failed to fetch queue metrics:", error)
+    }
+  }
 
   const fetchSuspiciousActivity = async () => {
     setSuspiciousLoading(true)
@@ -389,6 +423,70 @@ export default function AdminPage() {
             <p className="text-xs sm:text-sm text-muted-foreground">Total Cost</p>
           </div>
         </div>
+
+        {/* Queue Metrics Card */}
+        {queueMetrics && (
+          <div className={`rounded-2xl p-4 border ${
+            queueMetrics.percentOfLimit >= 80 
+              ? "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800" 
+              : queueMetrics.percentOfLimit >= 50 
+                ? "bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800"
+                : "bg-muted/50 border-transparent"
+          }`}>
+            <div className="flex items-center gap-2 mb-3">
+              <Clock className={`w-5 h-5 ${
+                queueMetrics.percentOfLimit >= 80 
+                  ? "text-red-600 dark:text-red-400" 
+                  : queueMetrics.percentOfLimit >= 50 
+                    ? "text-amber-600 dark:text-amber-400"
+                    : "text-muted-foreground"
+              }`} />
+              <h2 className="font-medium">Queue Performance (Last 24h)</h2>
+              {queueMetrics.percentOfLimit >= 80 && (
+                <span className="ml-auto px-2 py-0.5 text-xs rounded-full font-medium bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300">
+                  CRITICAL
+                </span>
+              )}
+              {queueMetrics.percentOfLimit >= 50 && queueMetrics.percentOfLimit < 80 && (
+                <span className="ml-auto px-2 py-0.5 text-xs rounded-full font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
+                  WARNING
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div>
+                <p className={`text-2xl font-bold ${
+                  queueMetrics.percentOfLimit >= 80 
+                    ? "text-red-600 dark:text-red-400" 
+                    : queueMetrics.percentOfLimit >= 50 
+                      ? "text-amber-600 dark:text-amber-400"
+                      : ""
+                }`}>
+                  {queueMetrics.longestProcessingTimeSec}s
+                </p>
+                <p className="text-xs text-muted-foreground">Longest Queue</p>
+                <p className="text-xs text-muted-foreground">({queueMetrics.percentOfLimit}% of 5min limit)</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{queueMetrics.avgProcessingTimeSec}s</p>
+                <p className="text-xs text-muted-foreground">Avg Processing</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{queueMetrics.totalJobsLast24h}</p>
+                <p className="text-xs text-muted-foreground">Jobs Run</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{queueMetrics.totalCallsLast24h}</p>
+                <p className="text-xs text-muted-foreground">Calls Made</p>
+              </div>
+            </div>
+            {queueMetrics.percentOfLimit >= 50 && (
+              <p className="mt-3 text-sm text-muted-foreground">
+                Consider adding another phone number to distribute load if this continues to increase.
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Suspicious Activity Alerts */}
         {suspiciousActivity.length > 0 && (

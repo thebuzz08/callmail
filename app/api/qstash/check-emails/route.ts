@@ -48,6 +48,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 })
   }
 
+  const jobStartTime = Date.now()
   console.log("[QStash] ===== Starting background email check =====")
 
   const results: Array<{
@@ -317,12 +318,24 @@ export async function POST(request: Request) {
       }
     }
 
-    console.log(`[QStash] ===== Finished: Checked ${results.length} users, triggered ${callsTriggered} calls =====`)
+    const jobEndTime = Date.now()
+    const totalProcessingTimeMs = jobEndTime - jobStartTime
+    const totalProcessingTimeSec = Math.round(totalProcessingTimeMs / 1000)
+
+    console.log(`[QStash] ===== Finished: Checked ${results.length} users, triggered ${callsTriggered} calls in ${totalProcessingTimeSec}s =====`)
+
+    // Save queue metrics for admin monitoring
+    await supabaseAdmin.from("queue_metrics").insert({
+      users_checked: results.length,
+      calls_triggered: callsTriggered,
+      processing_time_ms: totalProcessingTimeMs,
+    })
 
     return NextResponse.json({
       message: `Checked ${results.length} users, triggered ${callsTriggered} calls`,
       usersChecked: results.length,
       callsTriggered,
+      processingTimeMs: totalProcessingTimeMs,
       results,
     })
   } catch (error) {
