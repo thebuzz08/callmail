@@ -31,23 +31,28 @@ This guide walks you through setting up CallMail as an iOS app using Median.co.
 - Status bar style: Dark content (or Light if you have dark theme)
 - Disable bounce/overscroll: Yes
 
-## Step 3: Enable In-App Purchases
+## Step 3: Add Custom JavaScript for In-App Purchases
 
-This is the critical part for subscriptions to work.
+Since Median's IAP plugin requires a business account ($7200/yr), we use custom JavaScript instead.
 
 ### In Median Dashboard:
-1. Go to "Native Plugins" → "In-App Purchases"
-2. Enable In-App Purchases
-3. Add your product IDs:
-   - `com.callmail.pro.monthly`
-   - `com.callmail.pro.annual`
+1. Go to your app → **Customizations** → **Custom JavaScript**
+2. Copy the entire contents of `docs/median-storekit-bridge.js` from this repo
+3. Paste it into the Custom JavaScript field
+4. Save
+
+This JavaScript:
+- Interfaces directly with StoreKit (native iOS)
+- Shows Apple's payment sheet for purchases
+- Sends receipts to your backend for validation
+- Handles purchase restoration
 
 ### In App Store Connect:
 1. Make sure your products are created:
    - com.callmail.pro.monthly - $6.99/month auto-renewable
    - com.callmail.pro.annual - $59.99/year auto-renewable
 2. Products must be in "Ready to Submit" or "Approved" status
-3. Add App-Specific Shared Secret (copy to your server env vars)
+3. Add App-Specific Shared Secret (already set in Vercel)
 
 ## Step 4: Configure Server Notifications
 
@@ -57,17 +62,29 @@ In App Store Connect → Your App → App Information:
 
 ## Step 5: How It Works
 
-The web app automatically detects when it's running inside Median:
+The JavaScript bridge + your backend handles everything:
 
-1. User taps "Start Free Trial" 
-2. Web app detects native environment
-3. Calls Median's native IAP purchase flow
-4. Native Apple Pay sheet appears
-5. After purchase, receipt is sent to your server
-6. Server validates with Apple and activates subscription
-7. User is redirected to dashboard
+1. User taps "Subscribe" in the app
+2. Your web app calls `CallMailIAP.purchase('monthly')` or `CallMailIAP.purchase('annual')`
+3. StoreKit shows Apple's native payment sheet
+4. User completes purchase with Face ID/Touch ID
+5. Receipt is sent to `/api/apple/validate-receipt`
+6. Backend validates with Apple's servers
+7. Subscription is stored in your database
+8. User gets access to pro features
 
-For web users (not in the app), Stripe checkout is used instead.
+**For web users** (not in the app), Stripe checkout is used instead.
+
+**Apple handles:**
+- Payment processing
+- Subscription renewals (automatic)
+- Cancellations (via Settings app)
+- Refunds
+
+**Your backend handles:**
+- Receipt validation
+- Webhook notifications (renewals, cancellations)
+- Subscription status checks
 
 ## Step 6: Build & Test
 
