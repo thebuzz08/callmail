@@ -67,7 +67,7 @@ export default function HomePage() {
         {/* Brutalist grid background */}
         <div className="absolute inset-0 -z-10">
           <div 
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.08]"
             style={{
               backgroundImage: `
                 linear-gradient(to right, currentColor 1px, transparent 1px),
@@ -77,7 +77,7 @@ export default function HomePage() {
             }}
           />
           <div 
-            className="absolute inset-0 opacity-[0.02]"
+            className="absolute inset-0 opacity-[0.06]"
             style={{
               backgroundImage: `
                 linear-gradient(to right, currentColor 1px, transparent 1px),
@@ -208,7 +208,7 @@ export default function HomePage() {
       {/* Features - Added keyword-rich H2 and feature descriptions */}
       <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden">
         {/* Subtle diagonal lines */}
-        <div className="absolute inset-0 -z-10 opacity-[0.015]">
+        <div className="absolute inset-0 -z-10 opacity-[0.08]">
           <div 
             className="absolute inset-0"
             style={{
@@ -285,11 +285,11 @@ export default function HomePage() {
       {/* CTA Section - Updated copy for SEO */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
         {/* Concentric circles background */}
-        <div className="absolute inset-0 -z-10 flex items-center justify-center">
-          <div className="w-[800px] h-[800px] rounded-full border border-current opacity-[0.03]" />
-          <div className="absolute w-[600px] h-[600px] rounded-full border border-current opacity-[0.03]" />
-          <div className="absolute w-[400px] h-[400px] rounded-full border border-current opacity-[0.03]" />
-          <div className="absolute w-[200px] h-[200px] rounded-full border border-current opacity-[0.03]" />
+        <div className="absolute inset-0 -z-10 flex items-center justify-center opacity-[0.08]">
+          <div className="w-[800px] h-[800px] rounded-full border border-current" />
+          <div className="absolute w-[600px] h-[600px] rounded-full border border-current" />
+          <div className="absolute w-[400px] h-[400px] rounded-full border border-current" />
+          <div className="absolute w-[200px] h-[200px] rounded-full border border-current" />
         </div>
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
