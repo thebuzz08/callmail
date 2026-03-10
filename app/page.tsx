@@ -63,9 +63,36 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section - Updated H1 and copy for SEO */}
-      <section className="py-16 sm:py-28 px-4 sm:px-6">
+      <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
+        {/* Brutalist grid background */}
+        <div className="absolute inset-0 -z-10">
+          <div 
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, currentColor 1px, transparent 1px),
+                linear-gradient(to bottom, currentColor 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px'
+            }}
+          />
+          <div 
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, currentColor 1px, transparent 1px),
+                linear-gradient(to bottom, currentColor 1px, transparent 1px)
+              `,
+              backgroundSize: '15px 15px'
+            }}
+          />
+          {/* Radial fade */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,var(--background)_70%)]" />
+        </div>
+
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 border border-border bg-muted/50 px-4 py-2 rounded-full text-sm mb-8">
+          <div className="inline-flex items-center gap-2 border border-border bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm mb-8">
             <Bell className="w-4 h-4" aria-hidden="true" />
             <span>Never miss critical emails</span>
           </div>
@@ -77,8 +104,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed text-pretty">
-            CallMail calls your phone when you receive important emails from VIP senders or with urgent keywords. Break
-            through Do Not Disturb and never miss critical communications again.
+            CallMail calls your phone when you receive emails from VIP contacts, specific domains, or containing urgent keywords. Break through Do Not Disturb and never miss critical communications.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -91,7 +117,7 @@ export default function HomePage() {
             </Link>
             <a
               href="#how-it-works"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-border px-8 py-4 rounded-full font-medium text-lg hover:bg-muted transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-border bg-background/80 backdrop-blur-sm px-8 py-4 rounded-full font-medium text-lg hover:bg-muted transition-colors"
             >
               See How It Works
             </a>
@@ -157,9 +183,9 @@ export default function HomePage() {
               <div className="w-14 h-14 border border-border rounded-2xl flex items-center justify-center mb-6 mt-2">
                 <Bell className="w-7 h-7" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Set VIP Contacts & Keywords</h3>
+              <h3 className="text-xl font-semibold mb-3">Set Your Triggers</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Add email addresses of important people and urgent keywords you want to trigger phone calls.
+                Add VIP contacts, entire domains (like @company.com), or urgent keywords. Get called only for emails that match your criteria.
               </p>
             </article>
 
@@ -180,7 +206,22 @@ export default function HomePage() {
       </section>
 
       {/* Features - Added keyword-rich H2 and feature descriptions */}
-      <section id="features" className="py-20 sm:py-28 px-4 sm:px-6 bg-muted/30">
+      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden">
+        {/* Subtle diagonal lines */}
+        <div className="absolute inset-0 -z-10 opacity-[0.015]">
+          <div 
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `repeating-linear-gradient(
+                -45deg,
+                currentColor,
+                currentColor 1px,
+                transparent 1px,
+                transparent 40px
+              )`
+            }}
+          />
+        </div>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">Email to Phone Call Features</h2>
@@ -231,9 +272,9 @@ export default function HomePage() {
                 <Bell className="w-6 h-6" aria-hidden="true" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg mb-2">VIP Sender & Keyword Triggers</h3>
+                <h3 className="font-semibold text-lg mb-2">Contacts, Domains & Keywords</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Set up VIP email addresses and keyword triggers. Only get called for emails that truly matter to you.
+                  Add specific email addresses, entire domains (@company.com), or trigger keywords. Get called only for emails that truly matter.
                 </p>
               </div>
             </article>
@@ -242,7 +283,14 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section - Updated copy for SEO */}
-      <section className="py-20 sm:py-28 px-4 sm:px-6">
+      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
+        {/* Concentric circles background */}
+        <div className="absolute inset-0 -z-10 flex items-center justify-center">
+          <div className="w-[800px] h-[800px] rounded-full border border-current opacity-[0.03]" />
+          <div className="absolute w-[600px] h-[600px] rounded-full border border-current opacity-[0.03]" />
+          <div className="absolute w-[400px] h-[400px] rounded-full border border-current opacity-[0.03]" />
+          <div className="absolute w-[200px] h-[200px] rounded-full border border-current opacity-[0.03]" />
+        </div>
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
             Ready to get phone calls for important emails?
