@@ -64,31 +64,26 @@ export default function HomePage() {
 
       {/* Hero Section - Updated H1 and copy for SEO */}
       <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        {/* Brutalist grid background */}
+        {/* Elegant grid background */}
         <div className="absolute inset-0 -z-10">
-          <div 
-            className="absolute inset-0 opacity-[0.03]"
+          {/* Large 60px grid */}
+          <div
+            className="absolute inset-0"
             style={{
-              backgroundImage: `
-                linear-gradient(to right, currentColor 1px, transparent 1px),
-                linear-gradient(to bottom, currentColor 1px, transparent 1px)
-              `,
-              backgroundSize: '60px 60px'
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='%23000000' stroke-width='0.5' stroke-opacity='0.07'/%3E%3C/svg%3E")`,
+              backgroundSize: '60px 60px',
             }}
           />
-          <div 
-            className="absolute inset-0 opacity-[0.02]"
+          {/* Small 15px subgrid */}
+          <div
+            className="absolute inset-0"
             style={{
-              backgroundImage: `
-                linear-gradient(to right, currentColor 1px, transparent 1px),
-                linear-gradient(to bottom, currentColor 1px, transparent 1px)
-              `,
-              backgroundSize: '15px 15px'
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15'%3E%3Cpath d='M 15 0 L 0 0 0 15' fill='none' stroke='%23000000' stroke-width='0.3' stroke-opacity='0.04'/%3E%3C/svg%3E")`,
+              backgroundSize: '15px 15px',
             }}
           />
-          {/* Radial fade */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,var(--background)_70%)]" />
+          {/* Radial vignette fade */}
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, white 90%)' }} />
         </div>
 
         <div className="max-w-4xl mx-auto text-center">
@@ -207,18 +202,13 @@ export default function HomePage() {
 
       {/* Features - Added keyword-rich H2 and feature descriptions */}
       <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden">
-        {/* Subtle diagonal lines */}
-        <div className="absolute inset-0 -z-10 opacity-[0.015]">
-          <div 
+        {/* Diagonal hatch lines */}
+        <div className="absolute inset-0 -z-10">
+          <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `repeating-linear-gradient(
-                -45deg,
-                currentColor,
-                currentColor 1px,
-                transparent 1px,
-                transparent 40px
-              )`
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cline x1='0' y1='40' x2='40' y2='0' stroke='%23000000' stroke-width='0.4' stroke-opacity='0.06'/%3E%3C/svg%3E")`,
+              backgroundSize: '40px 40px',
             }}
           />
         </div>
@@ -284,12 +274,18 @@ export default function HomePage() {
 
       {/* CTA Section - Updated copy for SEO */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        {/* Concentric circles background */}
-        <div className="absolute inset-0 -z-10 flex items-center justify-center">
-          <div className="w-[800px] h-[800px] rounded-full border border-current opacity-[0.03]" />
-          <div className="absolute w-[600px] h-[600px] rounded-full border border-current opacity-[0.03]" />
-          <div className="absolute w-[400px] h-[400px] rounded-full border border-current opacity-[0.03]" />
-          <div className="absolute w-[200px] h-[200px] rounded-full border border-current opacity-[0.03]" />
+        {/* Concentric SVG circles */}
+        <div className="absolute inset-0 -z-10 flex items-center justify-center overflow-hidden">
+          <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <circle cx="50%" cy="50%" r="350" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="280" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="210" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="140" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="70"  fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
+            {/* Cross-hair lines */}
+            <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#000000" strokeOpacity="0.04" strokeWidth="0.5"/>
+            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#000000" strokeOpacity="0.04" strokeWidth="0.5"/>
+          </svg>
         </div>
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
