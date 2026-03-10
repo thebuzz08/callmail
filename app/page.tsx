@@ -64,26 +64,25 @@ export default function HomePage() {
 
       {/* Hero Section - Updated H1 and copy for SEO */}
       <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        {/* Elegant grid background */}
-        <div className="absolute inset-0 -z-10">
-          {/* Large 60px grid */}
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='%23000000' stroke-width='0.5' stroke-opacity='0.07'/%3E%3C/svg%3E")`,
-              backgroundSize: '60px 60px',
-            }}
-          />
-          {/* Small 15px subgrid */}
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15'%3E%3Cpath d='M 15 0 L 0 0 0 15' fill='none' stroke='%23000000' stroke-width='0.3' stroke-opacity='0.04'/%3E%3C/svg%3E")`,
-              backgroundSize: '15px 15px',
-            }}
-          />
-          {/* Radial vignette fade */}
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, white 90%)' }} />
+        {/* Elegant grid background - using inline SVG for guaranteed rendering */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid-large" width="60" height="60" patternUnits="userSpaceOnUse">
+                <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
+              </pattern>
+              <pattern id="grid-small" width="15" height="15" patternUnits="userSpaceOnUse">
+                <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#e5e5e5" strokeWidth="0.5"/>
+              </pattern>
+              <radialGradient id="fade" cx="50%" cy="50%" r="70%">
+                <stop offset="0%" stopColor="white" stopOpacity="0"/>
+                <stop offset="100%" stopColor="white" stopOpacity="1"/>
+              </radialGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-small)"/>
+            <rect width="100%" height="100%" fill="url(#grid-large)"/>
+            <rect width="100%" height="100%" fill="url(#fade)"/>
+          </svg>
         </div>
 
         <div className="max-w-4xl mx-auto text-center">
@@ -202,15 +201,16 @@ export default function HomePage() {
 
       {/* Features - Added keyword-rich H2 and feature descriptions */}
       <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden">
-        {/* Diagonal hatch lines */}
-        <div className="absolute inset-0 -z-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cline x1='0' y1='40' x2='40' y2='0' stroke='%23000000' stroke-width='0.4' stroke-opacity='0.06'/%3E%3C/svg%3E")`,
-              backgroundSize: '40px 40px',
-            }}
-          />
+        {/* Diagonal hatch lines - inline SVG */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="diagonals" width="40" height="40" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="40" x2="40" y2="0" stroke="#d4d4d4" strokeWidth="1"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#diagonals)"/>
+          </svg>
         </div>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -277,14 +277,14 @@ export default function HomePage() {
         {/* Concentric SVG circles */}
         <div className="absolute inset-0 -z-10 flex items-center justify-center overflow-hidden">
           <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <circle cx="50%" cy="50%" r="350" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="280" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="210" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="140" fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="70"  fill="none" stroke="#000000" strokeOpacity="0.05" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="350" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="280" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="210" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="140" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
+            <circle cx="50%" cy="50%" r="70"  fill="none" stroke="#d4d4d4" strokeWidth="1"/>
             {/* Cross-hair lines */}
-            <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#000000" strokeOpacity="0.04" strokeWidth="0.5"/>
-            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#000000" strokeOpacity="0.04" strokeWidth="0.5"/>
+            <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#e5e5e5" strokeWidth="1"/>
+            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#e5e5e5" strokeWidth="1"/>
           </svg>
         </div>
         <div className="max-w-4xl mx-auto text-center">
