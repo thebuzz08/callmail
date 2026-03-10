@@ -8,7 +8,7 @@
 
 import { Capacitor, registerPlugin } from "@capacitor/core"
 
-// Define the plugin interface
+// Define the IAP plugin interface
 export interface CallMailIAPPlugin {
   getProducts(): Promise<{ products: IAPProduct[] }>
   purchase(options: { productId: string }): Promise<IAPPurchaseResult>
@@ -16,8 +16,16 @@ export interface CallMailIAPPlugin {
   getSubscriptionStatus(): Promise<{ subscription: any; hasActiveSubscription: boolean }>
 }
 
-// Register the plugin
+// Define the Push plugin interface
+export interface CallMailPushPlugin {
+  requestPermissions(): Promise<{ granted: boolean }>
+  checkPermissions(): Promise<{ granted: boolean; status: string }>
+  getToken(): Promise<{ token: string | null }>
+}
+
+// Register the plugins
 const CallMailIAP = registerPlugin<CallMailIAPPlugin>("CallMailIAP")
+const CallMailPush = registerPlugin<CallMailPushPlugin>("CallMailPush")
 
 // Detect if running inside a native app
 export function isNativeApp(): boolean {
@@ -180,5 +188,92 @@ export async function getSubscriptionStatus(): Promise<{ hasActiveSubscription: 
   } catch (error: any) {
     console.error("[IAP] Get subscription status failed:", error)
     return { hasActiveSubscription: false, subscription: null }
+  }
+}
+
+// ========================================
+// Push Notifications
+// ========================================
+
+// Request push notification permissions
+export async function requestPushPermissions(): Promise<boolean> {
+  if (!isNativeApp()) {
+    return false
+  }
+
+  try {
+    const result = await CallMailPush.requestPermissions()
+    return result.granted
+  } catch (error: any) {
+    console.error("[Push] Permission request failed:", error)
+    return false
+  }
+}
+
+// Check push notification permissions
+export async function checkPushPermissions(): Promise<{ granted: boolean; status: string }> {
+  if (!isNativeApp()) {
+    return { granted: false, status: "web" }
+  }
+
+  try {
+    const result = await CallMailPush.checkPermissions()
+    return result
+  } catch (error: any) {
+    console.error("[Push] Check permissions failed:", error)
+    return { granted: false, status: "error" }
+  }
+}
+
+// Get push notification token
+export async function getPushToken(): Promise<string | null> {
+  if (!isNativeApp()) {
+    return null
+  }
+
+  try {
+    const result = await CallMailPush.getToken()
+    return result.token
+  } catch (error: any) {
+    console.error("[Push] Get token failed:", error)
+    return null
+  }
+}
+
+// Register push token with server
+export async function registerPushToken(): Promise<boolean> {
+  if (!isNativeApp()) {
+    return false
+  }
+
+  try {
+    // First request permissions
+    const granted = await requestPushPermissions()
+    if (!granted) {
+      console.log("[Push] Permissions not granted")
+      return false
+    }
+
+    // Wait a moment for the token to be generated
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    // Get the token
+    const token = await getPushToken()
+    if (!token) {
+      console.log("[Push] No token available")
+      return false
+    }
+
+    // Send to server
+    const response = await fetch("/api/user/push-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pushToken: token, platform: getPlatform() }),
+    })
+
+    return response.ok
+  } catch (error: any) {
+    console.error("[Push] Registration failed:", error)
+    return false
   }
 }

@@ -136,7 +136,7 @@ Xcode will launch automatically.
 
 # PART 4: Configure Xcode
 
-## Step 4.1: Add the StoreKit Plugin Files
+## Step 4.1: Add the Plugin Files
 
 1. In Xcode, look at the **left sidebar** (called Project Navigator)
 2. You'll see a folder structure like this:
@@ -150,20 +150,23 @@ Xcode will launch automatically.
    ```
 3. **Right-click** on the innermost **App** folder (the one that contains `AppDelegate.swift`)
 4. Click **Add Files to "App"...**
-5. A file browser will open. Navigate to your project folder, then to:
-   ```
-   ios-plugin/CallMailIAP/
-   ```
-6. Select **BOTH** files (hold Cmd to select multiple):
-   - `CallMailIAPPlugin.swift`
-   - `CallMailIAPPlugin.m`
-7. Make sure these options are set:
+5. A file browser will open. Navigate to your project folder, then add files from **BOTH** plugin folders:
+
+**First, add the IAP plugin files from `ios-plugin/CallMailIAP/`:**
+- `CallMailIAPPlugin.swift`
+- `CallMailIAPPlugin.m`
+
+**Then repeat and add the Push plugin files from `ios-plugin/CallMailPush/`:**
+- `CallMailPushPlugin.swift`
+- `CallMailPushPlugin.m`
+
+6. For each, make sure these options are set:
    - **"Copy items if needed"** is CHECKED
    - **"Create groups"** is selected (not "Create folder references")
    - Under "Add to targets", **"App"** is CHECKED
-8. Click **Add**
+7. Click **Add**
 
-You should now see both files in the left sidebar under the App folder.
+You should now see all 4 plugin files in the left sidebar under the App folder.
 
 ## Step 4.2: Find the Signing Settings
 
