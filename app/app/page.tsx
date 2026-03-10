@@ -6,9 +6,10 @@ import { LoginScreen } from "@/components/login-screen"
 import { DashboardScreen } from "@/components/dashboard-screen"
 import { SettingsScreen, type Theme } from "@/components/settings-screen"
 import { SubscriptionGate } from "@/components/subscription-gate"
+import { AppIntroScreen } from "@/components/app-intro-screen"
 import { Mail } from "lucide-react"
 
-export type AppScreen = "onboarding" | "login" | "dashboard" | "settings" | "banned" | "subscription"
+export type AppScreen = "intro" | "onboarding" | "login" | "dashboard" | "settings" | "banned" | "subscription"
 
 export interface UserSession {
   userId?: string
@@ -72,7 +73,8 @@ export default function AppPage() {
         return "dashboard"
       }
     }
-    return "onboarding"
+    // Start with intro screen for new users (shows login + app info)
+    return "intro"
   })
   const [watchedEmails, setWatchedEmails] = useState<VipContact[]>([])
   const [watchedDomains, setWatchedDomains] = useState<VipDomain[]>([])
@@ -301,22 +303,21 @@ export default function AppPage() {
     setUserSession(session)
     await fetchUserData()
     
-    // Check if user has subscription - if not, show subscription screen
-    // The subscription state will be set by fetchUserData
-    // For new users completing onboarding, show subscription screen
-    setCurrentScreen("subscription")
+    // After login, show onboarding tutorial which will then lead to subscription
+    // The onboarding teaches users about VIP contacts, domains, keywords
+    setCurrentScreen("onboarding")
   }
 
   const handleLogout = () => {
-    setUserSession(null)
-    setWatchedEmails([])
-    setWatchedKeywords([])
-    setUserPhoneNumber("")
-    localStorage.removeItem("callmail_theme")
-    // Clear both session cookies
-    document.cookie = "callmail_session=; Path=/; Max-Age=0"
-    document.cookie = "callmail_client=; Path=/; Max-Age=0"
-    setCurrentScreen("onboarding")
+  setUserSession(null)
+  setWatchedEmails([])
+  setWatchedKeywords([])
+  setUserPhoneNumber("")
+  localStorage.removeItem("callmail_theme")
+  // Clear both session cookies
+  document.cookie = "callmail_session=; Path=/; Max-Age=0"
+  document.cookie = "callmail_client=; Path=/; Max-Age=0"
+  setCurrentScreen("intro")
   }
 
   const addWatchedEmail = async (email: string) => {
@@ -526,9 +527,14 @@ export default function AppPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      {currentScreen === "onboarding" && <OnboardingScreen onNext={() => setCurrentScreen("login")} />}
-      {currentScreen === "login" && <LoginScreen onNext={handleLogin} onBack={() => setCurrentScreen("onboarding")} />}
+  <main className="min-h-screen bg-background">
+      {currentScreen === "intro" && (
+        <AppIntroScreen 
+          onLogin={() => setCurrentScreen("login")} 
+        />
+      )}
+      {currentScreen === "onboarding" && <OnboardingScreen onNext={() => setCurrentScreen("subscription")} />}
+      {currentScreen === "login" && <LoginScreen onNext={handleLogin} onBack={() => setCurrentScreen("intro")} />}
       {currentScreen === "subscription" && (
         <SubscriptionGate 
           userEmail={userSession?.email} 
