@@ -1,30 +1,36 @@
 /**
- * Native Bridge for Median.co / GoNative.io WebView apps
- * Handles communication between web app and native iOS/Android shell
+ * Native Bridge for Capacitor iOS App
+ * Handles communication between web app and native iOS shell
  * 
- * NOTE: This uses Median's native code injection for StoreKit access,
- * NOT the paid IAP plugin. The StoreKit bridge is injected via Custom JavaScript
- * in Median dashboard (see docs/median-storekit-bridge.js).
- * 
- * Median documentation: https://median.co/docs
+ * This uses Capacitor with a custom StoreKit 2 plugin for in-app purchases.
+ * See ios-plugin/CallMailIAP/ for the native Swift code.
  */
+
+import { Capacitor, registerPlugin } from "@capacitor/core"
+
+// Define the plugin interface
+export interface CallMailIAPPlugin {
+  getProducts(): Promise<{ products: IAPProduct[] }>
+  purchase(options: { productId: string }): Promise<IAPPurchaseResult>
+  restorePurchases(): Promise<IAPPurchaseResult>
+  getSubscriptionStatus(): Promise<{ subscription: any; hasActiveSubscription: boolean }>
+}
+
+// Register the plugin
+const CallMailIAP = registerPlugin<CallMailIAPPlugin>("CallMailIAP")
 
 // Detect if running inside a native app
 export function isNativeApp(): boolean {
   if (typeof window === "undefined") return false
   
-  // Median.co detection
+  // Capacitor detection (primary method)
+  if (Capacitor.isNativePlatform()) return true
+  
+  // Legacy: Median.co detection (if user hasn't migrated)
   if ((window as any).median) return true
   
-  // GoNative detection
+  // Legacy: GoNative detection
   if ((window as any).gonative) return true
-  
-  // iOS WebView detection (WKWebView)
-  if ((window as any).webkit?.messageHandlers?.median) return true
-  
-  // Check user agent for common WebView indicators
-  const ua = navigator.userAgent.toLowerCase()
-  if (ua.includes("median") || ua.includes("gonative")) return true
   
   return false
 }
@@ -67,6 +73,12 @@ export function navigateInApp(url: string): void {
 export function getPlatform(): "ios" | "android" | "web" {
   if (typeof window === "undefined") return "web"
   
+  // Capacitor platform detection
+  const platform = Capacitor.getPlatform()
+  if (platform === "ios") return "ios"
+  if (platform === "android") return "android"
+  
+  // Fallback to user agent
   const ua = navigator.userAgent.toLowerCase()
   if (/iphone|ipad|ipod/.test(ua)) return "ios"
   if (/android/.test(ua)) return "android"
@@ -105,41 +117,23 @@ export interface IAPPurchaseResult {
 
 // Initialize IAP and get available products
 export async function getProducts(): Promise<IAPProduct[]> {
-  return new Promise((resolve) => {
-    if (!isNativeApp()) {
-      resolve([])
-      return
-    }
+  if (!isNativeApp()) {
+    return []
+  }
 
-    const platform = getPlatform()
-    if (platform === "web") {
-      resolve([])
-      return
-    }
+  const platform = getPlatform()
+  if (platform === "web") {
+    return []
+  }
 
-    const productIds = Object.values(PRODUCTS[platform])
-
-    // Median.co API
-    if ((window as any).median?.iap) {
-      (window as any).median.iap.getProducts(productIds, (products: IAPProduct[]) => {
-        resolve(products || [])
-      })
-      return
-    }
-
-    // GoNative API
-    if ((window as any).gonative?.iap) {
-      (window as any).gonative.iap.getProducts({
-        productIds,
-        callback: (products: IAPProduct[]) => {
-          resolve(products || [])
-        },
-      })
-      return
-    }
-
-    resolve([])
-  })
+  try {
+    // Use Capacitor plugin
+    const result = await CallMailIAP.getProducts()
+    return result.products || []
+  } catch (error) {
+    console.error("[IAP] Failed to get products:", error)
+    return []
+  }
 }
 
 // Purchase a product
@@ -148,57 +142,14 @@ export async function purchaseProduct(productId: string): Promise<IAPPurchaseRes
     return { success: false, error: "Not running in native app" }
   }
 
-  // Determine plan type from product ID
-  const planType = productId.includes("monthly") ? "monthly" : "annual"
-
-  // Use our custom StoreKit bridge (injected via Median Custom JavaScript)
-  // See docs/median-storekit-bridge.js
-  if ((window as any).CallMailIAP) {
-    try {
-      const result = await (window as any).CallMailIAP.purchase(planType)
-      return {
-        success: result.success,
-        productId: productId,
-        error: result.error,
-      }
-    } catch (e: any) {
-      return { success: false, error: e.message || "Purchase failed" }
-    }
+  try {
+    // Use Capacitor plugin - receipt validation is handled automatically in Swift
+    const result = await CallMailIAP.purchase({ productId })
+    return result
+  } catch (error: any) {
+    console.error("[IAP] Purchase failed:", error)
+    return { success: false, error: error.message || "Purchase failed" }
   }
-
-  // Fallback: Median.co paid IAP plugin (if they upgrade later)
-  if ((window as any).median?.iap) {
-    return new Promise((resolve) => {
-      (window as any).median.iap.purchase(productId, async (result: any) => {
-        if (result.success && result.receipt) {
-          try {
-            const response = await fetch("/api/apple/validate-receipt", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ receiptData: result.receipt }),
-            })
-            const data = await response.json()
-            if (data.success) {
-              resolve({
-                success: true,
-                productId: result.productId,
-                transactionId: result.transactionId,
-                receipt: result.receipt,
-              })
-            } else {
-              resolve({ success: false, error: data.error || "Receipt validation failed" })
-            }
-          } catch (e) {
-            resolve({ success: false, error: "Failed to validate receipt" })
-          }
-        } else {
-          resolve({ success: false, error: result.error || "Purchase failed" })
-        }
-      })
-    })
-  }
-
-  return { success: false, error: "No IAP handler found. Make sure the StoreKit bridge is loaded." }
 }
 
 // Restore previous purchases
@@ -207,45 +158,27 @@ export async function restorePurchases(): Promise<IAPPurchaseResult> {
     return { success: false, error: "Not running in native app" }
   }
 
-  // Use our custom StoreKit bridge (injected via Median Custom JavaScript)
-  if ((window as any).CallMailIAP) {
-    try {
-      const result = await (window as any).CallMailIAP.restore()
-      return {
-        success: result.success,
-        error: result.error,
-      }
-    } catch (e: any) {
-      return { success: false, error: e.message || "Restore failed" }
-    }
+  try {
+    // Use Capacitor plugin - receipt validation is handled automatically in Swift
+    const result = await CallMailIAP.restorePurchases()
+    return result
+  } catch (error: any) {
+    console.error("[IAP] Restore failed:", error)
+    return { success: false, error: error.message || "Restore failed" }
+  }
+}
+
+// Get current subscription status from the native app
+export async function getSubscriptionStatus(): Promise<{ hasActiveSubscription: boolean; subscription: any }> {
+  if (!isNativeApp()) {
+    return { hasActiveSubscription: false, subscription: null }
   }
 
-  // Fallback: Median.co paid IAP plugin
-  if ((window as any).median?.iap) {
-    return new Promise((resolve) => {
-      (window as any).median.iap.restore(async (result: any) => {
-        if (result.success && result.receipt) {
-          try {
-            const response = await fetch("/api/apple/validate-receipt", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ receiptData: result.receipt }),
-            })
-            const data = await response.json()
-            resolve({
-              success: data.success,
-              receipt: result.receipt,
-              error: data.error,
-            })
-          } catch (e) {
-            resolve({ success: false, error: "Failed to validate receipt" })
-          }
-        } else {
-          resolve({ success: false, error: result.error || "No purchases to restore" })
-        }
-      })
-    })
+  try {
+    const result = await CallMailIAP.getSubscriptionStatus()
+    return result
+  } catch (error: any) {
+    console.error("[IAP] Get subscription status failed:", error)
+    return { hasActiveSubscription: false, subscription: null }
   }
-
-  return { success: false, error: "No IAP handler found. Make sure the StoreKit bridge is loaded." }
 }
