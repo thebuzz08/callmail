@@ -1,26 +1,44 @@
 /**
- * Native Bridge for Median.co / GoNative.io WebView apps
- * Handles communication between web app and native iOS/Android shell
+ * Native Bridge for Capacitor iOS App
+ * Handles communication between web app and native iOS shell
  * 
- * Median documentation: https://median.co/docs/iap
+ * This uses Capacitor with a custom StoreKit 2 plugin for in-app purchases.
+ * See ios-plugin/CallMailIAP/ for the native Swift code.
  */
+
+import { Capacitor, registerPlugin } from "@capacitor/core"
+
+// Define the IAP plugin interface
+export interface CallMailIAPPlugin {
+  getProducts(): Promise<{ products: IAPProduct[] }>
+  purchase(options: { productId: string }): Promise<IAPPurchaseResult>
+  restorePurchases(): Promise<IAPPurchaseResult>
+  getSubscriptionStatus(): Promise<{ subscription: any; hasActiveSubscription: boolean }>
+}
+
+// Define the Push plugin interface
+export interface CallMailPushPlugin {
+  requestPermissions(): Promise<{ granted: boolean }>
+  checkPermissions(): Promise<{ granted: boolean; status: string }>
+  getToken(): Promise<{ token: string | null }>
+}
+
+// Register the plugins
+const CallMailIAP = registerPlugin<CallMailIAPPlugin>("CallMailIAP")
+const CallMailPush = registerPlugin<CallMailPushPlugin>("CallMailPush")
 
 // Detect if running inside a native app
 export function isNativeApp(): boolean {
   if (typeof window === "undefined") return false
   
-  // Median.co detection
+  // Capacitor detection (primary method)
+  if (Capacitor.isNativePlatform()) return true
+  
+  // Legacy: Median.co detection (if user hasn't migrated)
   if ((window as any).median) return true
   
-  // GoNative detection
+  // Legacy: GoNative detection
   if ((window as any).gonative) return true
-  
-  // iOS WebView detection (WKWebView)
-  if ((window as any).webkit?.messageHandlers?.median) return true
-  
-  // Check user agent for common WebView indicators
-  const ua = navigator.userAgent.toLowerCase()
-  if (ua.includes("median") || ua.includes("gonative")) return true
   
   return false
 }
@@ -63,6 +81,12 @@ export function navigateInApp(url: string): void {
 export function getPlatform(): "ios" | "android" | "web" {
   if (typeof window === "undefined") return "web"
   
+  // Capacitor platform detection
+  const platform = Capacitor.getPlatform()
+  if (platform === "ios") return "ios"
+  if (platform === "android") return "android"
+  
+  // Fallback to user agent
   const ua = navigator.userAgent.toLowerCase()
   if (/iphone|ipad|ipod/.test(ua)) return "ios"
   if (/android/.test(ua)) return "android"
@@ -101,183 +125,155 @@ export interface IAPPurchaseResult {
 
 // Initialize IAP and get available products
 export async function getProducts(): Promise<IAPProduct[]> {
-  return new Promise((resolve) => {
-    if (!isNativeApp()) {
-      resolve([])
-      return
-    }
+  if (!isNativeApp()) {
+    return []
+  }
 
-    const platform = getPlatform()
-    if (platform === "web") {
-      resolve([])
-      return
-    }
+  const platform = getPlatform()
+  if (platform === "web") {
+    return []
+  }
 
-    const productIds = Object.values(PRODUCTS[platform])
-
-    // Median.co API
-    if ((window as any).median?.iap) {
-      (window as any).median.iap.getProducts(productIds, (products: IAPProduct[]) => {
-        resolve(products || [])
-      })
-      return
-    }
-
-    // GoNative API
-    if ((window as any).gonative?.iap) {
-      (window as any).gonative.iap.getProducts({
-        productIds,
-        callback: (products: IAPProduct[]) => {
-          resolve(products || [])
-        },
-      })
-      return
-    }
-
-    resolve([])
-  })
+  try {
+    // Use Capacitor plugin
+    const result = await CallMailIAP.getProducts()
+    return result.products || []
+  } catch (error) {
+    console.error("[IAP] Failed to get products:", error)
+    return []
+  }
 }
 
 // Purchase a product
 export async function purchaseProduct(productId: string): Promise<IAPPurchaseResult> {
-  return new Promise((resolve) => {
-    if (!isNativeApp()) {
-      resolve({ success: false, error: "Not running in native app" })
-      return
-    }
+  if (!isNativeApp()) {
+    return { success: false, error: "Not running in native app" }
+  }
 
-    // Median.co API
-    if ((window as any).median?.iap) {
-      (window as any).median.iap.purchase(productId, async (result: any) => {
-        if (result.success && result.receipt) {
-          // Validate receipt with our server
-          try {
-            const response = await fetch("/api/apple/validate-receipt", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ receiptData: result.receipt }),
-            })
-            const data = await response.json()
-            if (data.success) {
-              resolve({
-                success: true,
-                productId: result.productId,
-                transactionId: result.transactionId,
-                receipt: result.receipt,
-              })
-            } else {
-              resolve({ success: false, error: data.error || "Receipt validation failed" })
-            }
-          } catch (e) {
-            resolve({ success: false, error: "Failed to validate receipt" })
-          }
-        } else {
-          resolve({ success: false, error: result.error || "Purchase failed" })
-        }
-      })
-      return
-    }
-
-    // GoNative API
-    if ((window as any).gonative?.iap) {
-      (window as any).gonative.iap.purchase({
-        productId,
-        callback: async (result: any) => {
-          if (result.success && result.receipt) {
-            try {
-              const response = await fetch("/api/apple/validate-receipt", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ receiptData: result.receipt }),
-              })
-              const data = await response.json()
-              if (data.success) {
-                resolve({
-                  success: true,
-                  productId: result.productId,
-                  transactionId: result.transactionId,
-                  receipt: result.receipt,
-                })
-              } else {
-                resolve({ success: false, error: data.error || "Receipt validation failed" })
-              }
-            } catch (e) {
-              resolve({ success: false, error: "Failed to validate receipt" })
-            }
-          } else {
-            resolve({ success: false, error: result.error || "Purchase failed" })
-          }
-        },
-      })
-      return
-    }
-
-    resolve({ success: false, error: "No IAP handler found" })
-  })
+  try {
+    // Use Capacitor plugin - receipt validation is handled automatically in Swift
+    const result = await CallMailIAP.purchase({ productId })
+    return result
+  } catch (error: any) {
+    console.error("[IAP] Purchase failed:", error)
+    return { success: false, error: error.message || "Purchase failed" }
+  }
 }
 
 // Restore previous purchases
 export async function restorePurchases(): Promise<IAPPurchaseResult> {
-  return new Promise((resolve) => {
-    if (!isNativeApp()) {
-      resolve({ success: false, error: "Not running in native app" })
-      return
+  if (!isNativeApp()) {
+    return { success: false, error: "Not running in native app" }
+  }
+
+  try {
+    // Use Capacitor plugin - receipt validation is handled automatically in Swift
+    const result = await CallMailIAP.restorePurchases()
+    return result
+  } catch (error: any) {
+    console.error("[IAP] Restore failed:", error)
+    return { success: false, error: error.message || "Restore failed" }
+  }
+}
+
+// Get current subscription status from the native app
+export async function getSubscriptionStatus(): Promise<{ hasActiveSubscription: boolean; subscription: any }> {
+  if (!isNativeApp()) {
+    return { hasActiveSubscription: false, subscription: null }
+  }
+
+  try {
+    const result = await CallMailIAP.getSubscriptionStatus()
+    return result
+  } catch (error: any) {
+    console.error("[IAP] Get subscription status failed:", error)
+    return { hasActiveSubscription: false, subscription: null }
+  }
+}
+
+// ========================================
+// Push Notifications
+// ========================================
+
+// Request push notification permissions
+export async function requestPushPermissions(): Promise<boolean> {
+  if (!isNativeApp()) {
+    return false
+  }
+
+  try {
+    const result = await CallMailPush.requestPermissions()
+    return result.granted
+  } catch (error: any) {
+    console.error("[Push] Permission request failed:", error)
+    return false
+  }
+}
+
+// Check push notification permissions
+export async function checkPushPermissions(): Promise<{ granted: boolean; status: string }> {
+  if (!isNativeApp()) {
+    return { granted: false, status: "web" }
+  }
+
+  try {
+    const result = await CallMailPush.checkPermissions()
+    return result
+  } catch (error: any) {
+    console.error("[Push] Check permissions failed:", error)
+    return { granted: false, status: "error" }
+  }
+}
+
+// Get push notification token
+export async function getPushToken(): Promise<string | null> {
+  if (!isNativeApp()) {
+    return null
+  }
+
+  try {
+    const result = await CallMailPush.getToken()
+    return result.token
+  } catch (error: any) {
+    console.error("[Push] Get token failed:", error)
+    return null
+  }
+}
+
+// Register push token with server
+export async function registerPushToken(): Promise<boolean> {
+  if (!isNativeApp()) {
+    return false
+  }
+
+  try {
+    // First request permissions
+    const granted = await requestPushPermissions()
+    if (!granted) {
+      console.log("[Push] Permissions not granted")
+      return false
     }
 
-    // Median.co API
-    if ((window as any).median?.iap) {
-      (window as any).median.iap.restore(async (result: any) => {
-        if (result.success && result.receipt) {
-          try {
-            const response = await fetch("/api/apple/validate-receipt", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ receiptData: result.receipt }),
-            })
-            const data = await response.json()
-            resolve({
-              success: data.success,
-              receipt: result.receipt,
-              error: data.error,
-            })
-          } catch (e) {
-            resolve({ success: false, error: "Failed to validate receipt" })
-          }
-        } else {
-          resolve({ success: false, error: result.error || "No purchases to restore" })
-        }
-      })
-      return
+    // Wait a moment for the token to be generated
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    // Get the token
+    const token = await getPushToken()
+    if (!token) {
+      console.log("[Push] No token available")
+      return false
     }
 
-    // GoNative API
-    if ((window as any).gonative?.iap) {
-      (window as any).gonative.iap.restore({
-        callback: async (result: any) => {
-          if (result.success && result.receipt) {
-            try {
-              const response = await fetch("/api/apple/validate-receipt", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ receiptData: result.receipt }),
-            })
-              const data = await response.json()
-              resolve({
-                success: data.success,
-                receipt: result.receipt,
-                error: data.error,
-              })
-            } catch (e) {
-              resolve({ success: false, error: "Failed to validate receipt" })
-            }
-          } else {
-            resolve({ success: false, error: result.error || "No purchases to restore" })
-          }
-        },
-      })
-      return
-    }
+    // Send to server
+    const response = await fetch("/api/user/push-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pushToken: token, platform: getPlatform() }),
+    })
 
-    resolve({ success: false, error: "No IAP handler found" })
-  })
+    return response.ok
+  } catch (error: any) {
+    console.error("[Push] Registration failed:", error)
+    return false
+  }
 }

@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "7N54XHKAPW.xyz.callmail.app",
+        "paths": ["/app/*", "/api/auth/*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["7N54XHKAPW.xyz.callmail.app"]
+  }
+}

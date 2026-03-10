@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Check, Zap, RotateCcw } from "lucide-react"
 import { useState, useEffect } from "react"
 import { isNativeApp, getPlatform, purchaseProduct, restorePurchases, PRODUCTS } from "@/lib/native-bridge"
+import { trackIAPInitiated, trackIAPCompleted, trackIAPFailed, trackIAPRestored, trackSubscriptionStarted } from "@/lib/analytics"
 
 interface SubscriptionGateProps {
   userEmail?: string
@@ -43,14 +44,18 @@ export function SubscriptionGate({ userEmail, onBack, onSkip, onSubscriptionComp
     try {
       // If in native iOS/Android app, use native IAP
       if (isNative && platform !== "web") {
+        trackIAPInitiated(selectedPlan)
         const productId = PRODUCTS[platform][selectedPlan]
         const result = await purchaseProduct(productId)
         
         if (result.success) {
+          trackIAPCompleted(selectedPlan)
+          trackSubscriptionStarted(selectedPlan, "ios")
           // Purchase successful, subscription should be active
           onSubscriptionComplete?.()
           window.location.reload()
         } else {
+          trackIAPFailed(selectedPlan, result.error || "Unknown error")
           setError(result.error || "Purchase failed")
         }
       } else {
@@ -79,6 +84,7 @@ export function SubscriptionGate({ userEmail, onBack, onSkip, onSubscriptionComp
     try {
       const result = await restorePurchases()
       if (result.success) {
+        trackIAPRestored()
         onSubscriptionComplete?.()
         window.location.reload()
       } else {

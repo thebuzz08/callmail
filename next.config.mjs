@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable static export for Capacitor iOS app
+  // Comment out 'output: "export"' when deploying to Vercel (it uses SSR)
+  // Uncomment it only when building for iOS
+  // output: "export",
   typescript: {
     ignoreBuildErrors: true,
   },
