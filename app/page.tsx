@@ -63,27 +63,8 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section - Updated H1 and copy for SEO */}
-      <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        {/* Elegant grid background - using inline SVG for guaranteed rendering */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid-large" width="60" height="60" patternUnits="userSpaceOnUse">
-                <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
-              </pattern>
-              <pattern id="grid-small" width="15" height="15" patternUnits="userSpaceOnUse">
-                <path d="M 15 0 L 0 0 0 15" fill="none" stroke="#e5e5e5" strokeWidth="0.5"/>
-              </pattern>
-              <radialGradient id="fade" cx="50%" cy="50%" r="70%">
-                <stop offset="0%" stopColor="white" stopOpacity="0"/>
-                <stop offset="100%" stopColor="white" stopOpacity="1"/>
-              </radialGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid-small)"/>
-            <rect width="100%" height="100%" fill="url(#grid-large)"/>
-            <rect width="100%" height="100%" fill="url(#fade)"/>
-          </svg>
-        </div>
+      <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-grid.jpg)', backgroundAttachment: 'fixed' }}>
+        <div className="absolute inset-0 -z-10 bg-white/80" />
 
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 border border-border bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm mb-8">
@@ -200,18 +181,8 @@ export default function HomePage() {
       </section>
 
       {/* Features - Added keyword-rich H2 and feature descriptions */}
-      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden">
-        {/* Diagonal hatch lines - inline SVG */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="diagonals" width="40" height="40" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="40" x2="40" y2="0" stroke="#d4d4d4" strokeWidth="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#diagonals)"/>
-          </svg>
-        </div>
+      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-diagonal.jpg)', backgroundAttachment: 'fixed' }}>
+        <div className="absolute inset-0 -z-10 bg-muted/40" />
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">Email to Phone Call Features</h2>
@@ -273,20 +244,8 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section - Updated copy for SEO */}
-      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        {/* Concentric SVG circles */}
-        <div className="absolute inset-0 -z-10 flex items-center justify-center overflow-hidden">
-          <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-            <circle cx="50%" cy="50%" r="350" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="280" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="210" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="140" fill="none" stroke="#d4d4d4" strokeWidth="1"/>
-            <circle cx="50%" cy="50%" r="70"  fill="none" stroke="#d4d4d4" strokeWidth="1"/>
-            {/* Cross-hair lines */}
-            <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#e5e5e5" strokeWidth="1"/>
-            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#e5e5e5" strokeWidth="1"/>
-          </svg>
-        </div>
+      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-circles.jpg)', backgroundAttachment: 'fixed' }}>
+        <div className="absolute inset-0 -z-10 bg-white/85" />
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
             Ready to get phone calls for important emails?
