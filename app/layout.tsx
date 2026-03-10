@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script"
 import { CookieConsent } from "@/components/cookie-consent"
+import { AppWrapper } from "@/components/app-wrapper"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -259,7 +260,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`font-sans antialiased`}>
-        {children}
+        <AppWrapper showSplash={true}>
+          {children}
+        </AppWrapper>
         <Analytics />
         <CookieConsent />
       </body>
