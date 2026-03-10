@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAM_ID.co.median.ios.qddwkjj",
+        "paths": ["/app/*", "/auth/*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["TEAM_ID.co.median.ios.qddwkjj"]
+  }
+}
