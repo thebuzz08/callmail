@@ -318,7 +318,7 @@ export default function HomePage() {
                   alt="CallMail Logo"
                   width={64}
                   height={64}
-                  className="rounded-xl -ml-3 -mr-1"
+                  className="rounded-xl -ml-6 mr-2"
                 />
                 <span className="font-semibold">CallMail</span>
               </Link>
