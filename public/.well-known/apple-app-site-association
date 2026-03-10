@@ -3,12 +3,12 @@
     "apps": [],
     "details": [
       {
-        "appID": "7N54XHKAPW.co.median.ios.qddwkjj",
-        "paths": ["/app/*", "/auth/*"]
+        "appID": "7N54XHKAPW.xyz.callmail.app",
+        "paths": ["/app/*", "/api/auth/*"]
       }
     ]
   },
   "webcredentials": {
-    "apps": ["7N54XHKAPW.co.median.ios.qddwkjj"]
+    "apps": ["7N54XHKAPW.xyz.callmail.app"]
   }
 }

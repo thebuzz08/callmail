@@ -1,25 +1,24 @@
 import type { CapacitorConfig } from "@capacitor/cli"
 
 const config: CapacitorConfig = {
-  appId: "co.median.ios.qddwkjj",
+  appId: "xyz.callmail.app",
   appName: "CallMail",
   webDir: "out",
   server: {
-    // In production, the app loads from the bundled files
-    // For development, you can use a live URL:
-    // url: "http://localhost:3000",
-    // cleartext: true,
+    // Use live URL so OAuth, cookies, and API calls work properly
+    url: "https://call-mail.xyz",
+    // Allow navigation to external URLs (for OAuth)
+    allowNavigation: ["accounts.google.com", "*.google.com"],
   },
   ios: {
     scheme: "CallMail",
     contentInset: "automatic",
     preferredContentMode: "mobile",
-    // Allow navigation to your domain for OAuth
     allowsLinkPreview: true,
     scrollEnabled: true,
   },
   plugins: {
-    // We use a custom StoreKit plugin, not a third-party one
+    // We use a custom StoreKit plugin for In-App Purchases
   },
 }
 
