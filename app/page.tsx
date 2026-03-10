@@ -66,29 +66,16 @@ export default function HomePage() {
       <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
         {/* Brutalist grid background */}
         <div className="absolute inset-0 -z-10">
+          {/* Large grid */}
           <div 
             className="absolute inset-0"
             style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(0,0,0,0.08) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0,0,0,0.08) 1px, transparent 1px)
-              `,
+              backgroundImage: 'linear-gradient(to right, #d1d5db 1px, transparent 1px), linear-gradient(to bottom, #d1d5db 1px, transparent 1px)',
               backgroundSize: '60px 60px'
             }}
           />
-          <div 
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px)
-              `,
-              backgroundSize: '15px 15px'
-            }}
-          />
-          {/* Radial fade */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background))_70%)]" />
+          {/* Radial fade to white */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,white_70%)]" />
         </div>
 
         <div className="max-w-4xl mx-auto text-center">
@@ -212,13 +199,7 @@ export default function HomePage() {
           <div 
             className="absolute inset-0"
             style={{
-              backgroundImage: `repeating-linear-gradient(
-                -45deg,
-                rgba(0,0,0,0.06),
-                rgba(0,0,0,0.06) 1px,
-                transparent 1px,
-                transparent 40px
-              )`
+              backgroundImage: 'repeating-linear-gradient(-45deg, #d1d5db, #d1d5db 1px, transparent 1px, transparent 40px)'
             }}
           />
         </div>
