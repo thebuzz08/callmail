@@ -312,13 +312,13 @@ export default function HomePage() {
       <footer className="border-t border-border py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <Link href="/" className="flex items-center">
+              <Link href="/" className="flex items-center gap-2">
                 <Image
                   src="/images/callmail-contact-photo.jpg"
                   alt="CallMail Logo"
                   width={64}
                   height={64}
-                  className="rounded-xl -ml-6 mr-2"
+                  className="rounded-xl -ml-2 -mr-2"
                 />
                 <span className="font-semibold">CallMail</span>
               </Link>
