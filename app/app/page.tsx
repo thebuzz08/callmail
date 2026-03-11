@@ -8,6 +8,7 @@ import { SettingsScreen, type Theme } from "@/components/settings-screen"
 import { SubscriptionGate } from "@/components/subscription-gate"
 import { AppIntroScreen } from "@/components/app-intro-screen"
 import { Mail } from "lucide-react"
+import { registerPushToken } from "@/lib/native-bridge"
 
 export type AppScreen = "intro" | "onboarding" | "login" | "dashboard" | "settings" | "banned" | "subscription"
 
@@ -244,6 +245,9 @@ export default function AppPage() {
         setUserSession(session)
         setCurrentScreen("dashboard")
         await fetchUserData()
+        
+        // Register for push notifications (if on iOS/Android app)
+        registerPushToken().catch(e => console.error("[v0] Push token registration failed:", e))
         
         // If returning from successful checkout, poll for subscription update
         // (webhook may take a moment to process)
