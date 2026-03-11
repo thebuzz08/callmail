@@ -4,9 +4,9 @@
  * 
  * This uses Capacitor with a custom StoreKit 2 plugin for in-app purchases.
  * See ios-plugin/CallMailIAP/ for the native Swift code.
+ * 
+ * Note: Capacitor is dynamically imported to avoid build errors on web (Vercel).
  */
-
-import { Capacitor, registerPlugin } from "@capacitor/core"
 
 // Define the IAP plugin interface
 export interface CallMailIAPPlugin {
@@ -23,16 +23,35 @@ export interface CallMailPushPlugin {
   getToken(): Promise<{ token: string | null }>
 }
 
-// Register the plugins
-const CallMailIAP = registerPlugin<CallMailIAPPlugin>("CallMailIAP")
-const CallMailPush = registerPlugin<CallMailPushPlugin>("CallMailPush")
+// Capacitor plugin instances (initialized lazily)
+let CallMailIAP: CallMailIAPPlugin | null = null
+let CallMailPush: CallMailPushPlugin | null = null
+let capacitorInitialized = false
+
+// Initialize Capacitor plugins dynamically
+async function initCapacitor(): Promise<boolean> {
+  if (capacitorInitialized) return CallMailIAP !== null
+  capacitorInitialized = true
+  
+  try {
+    const { Capacitor, registerPlugin } = await import("@capacitor/core")
+    if (Capacitor.isNativePlatform()) {
+      CallMailIAP = registerPlugin<CallMailIAPPlugin>("CallMailIAP")
+      CallMailPush = registerPlugin<CallMailPushPlugin>("CallMailPush")
+      return true
+    }
+  } catch (e) {
+    // Capacitor not available (running on web)
+  }
+  return false
+}
 
 // Detect if running inside a native app
 export function isNativeApp(): boolean {
   if (typeof window === "undefined") return false
   
-  // Capacitor detection (primary method)
-  if (Capacitor.isNativePlatform()) return true
+  // Check for Capacitor native platform indicator
+  if ((window as any).Capacitor?.isNativePlatform?.()) return true
   
   // Legacy: Median.co detection (if user hasn't migrated)
   if ((window as any).median) return true
@@ -82,9 +101,9 @@ export function getPlatform(): "ios" | "android" | "web" {
   if (typeof window === "undefined") return "web"
   
   // Capacitor platform detection
-  const platform = Capacitor.getPlatform()
-  if (platform === "ios") return "ios"
-  if (platform === "android") return "android"
+  const capacitorPlatform = (window as any).Capacitor?.getPlatform?.()
+  if (capacitorPlatform === "ios") return "ios"
+  if (capacitorPlatform === "android") return "android"
   
   // Fallback to user agent
   const ua = navigator.userAgent.toLowerCase()
@@ -135,7 +154,8 @@ export async function getProducts(): Promise<IAPProduct[]> {
   }
 
   try {
-    // Use Capacitor plugin
+    await initCapacitor()
+    if (!CallMailIAP) return []
     const result = await CallMailIAP.getProducts()
     return result.products || []
   } catch (error) {
@@ -151,7 +171,8 @@ export async function purchaseProduct(productId: string): Promise<IAPPurchaseRes
   }
 
   try {
-    // Use Capacitor plugin - receipt validation is handled automatically in Swift
+    await initCapacitor()
+    if (!CallMailIAP) return { success: false, error: "Capacitor not available" }
     const result = await CallMailIAP.purchase({ productId })
     return result
   } catch (error: any) {
@@ -167,7 +188,8 @@ export async function restorePurchases(): Promise<IAPPurchaseResult> {
   }
 
   try {
-    // Use Capacitor plugin - receipt validation is handled automatically in Swift
+    await initCapacitor()
+    if (!CallMailIAP) return { success: false, error: "Capacitor not available" }
     const result = await CallMailIAP.restorePurchases()
     return result
   } catch (error: any) {
@@ -183,6 +205,8 @@ export async function getSubscriptionStatus(): Promise<{ hasActiveSubscription: 
   }
 
   try {
+    await initCapacitor()
+    if (!CallMailIAP) return { hasActiveSubscription: false, subscription: null }
     const result = await CallMailIAP.getSubscriptionStatus()
     return result
   } catch (error: any) {
@@ -202,6 +226,8 @@ export async function requestPushPermissions(): Promise<boolean> {
   }
 
   try {
+    await initCapacitor()
+    if (!CallMailPush) return false
     const result = await CallMailPush.requestPermissions()
     return result.granted
   } catch (error: any) {
@@ -217,6 +243,8 @@ export async function checkPushPermissions(): Promise<{ granted: boolean; status
   }
 
   try {
+    await initCapacitor()
+    if (!CallMailPush) return { granted: false, status: "not_available" }
     const result = await CallMailPush.checkPermissions()
     return result
   } catch (error: any) {
@@ -232,6 +260,8 @@ export async function getPushToken(): Promise<string | null> {
   }
 
   try {
+    await initCapacitor()
+    if (!CallMailPush) return null
     const result = await CallMailPush.getToken()
     return result.token
   } catch (error: any) {
