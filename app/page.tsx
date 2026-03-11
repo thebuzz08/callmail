@@ -244,8 +244,8 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section - Updated copy for SEO */}
-      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-circles.jpg)', backgroundAttachment: 'fixed' }}>
-        <div className="absolute inset-0 -z-10 bg-white/85" />
+      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden bg-muted">
+        <div className="absolute inset-0 -z-10 bg-background" />
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
             Ready to get phone calls for important emails?
