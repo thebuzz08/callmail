@@ -14,7 +14,16 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background text-foreground" style={{ backgroundImage: 'url(/backgrounds/texture-grid.jpg)', backgroundAttachment: 'fixed', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Fixed Background - works on iOS */}
+      <div 
+        className="fixed inset-0 -z-10" 
+        style={{ 
+          backgroundImage: 'url(/backgrounds/texture-grid.jpg)', 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center'
+        }} 
+      />
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
