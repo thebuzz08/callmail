@@ -64,7 +64,6 @@ export default function HomePage() {
 
       {/* Hero Section - Updated H1 and copy for SEO */}
       <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-background/80" />
 
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 border border-border bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm mb-8">
@@ -101,7 +100,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 px-4 sm:px-6 border-y border-border bg-muted/30">
+      <section className="py-12 px-4 sm:px-6 border-y border-border">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
@@ -181,8 +180,7 @@ export default function HomePage() {
       </section>
 
       {/* Features - Added keyword-rich H2 and feature descriptions */}
-      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-diagonal.jpg)', backgroundAttachment: 'fixed' }}>
-        <div className="absolute inset-0 -z-10 bg-muted/40" />
+      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">Email to Phone Call Features</h2>
@@ -245,7 +243,6 @@ export default function HomePage() {
 
       {/* CTA Section - Updated copy for SEO */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-background/90" />
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
             Ready to get phone calls for important emails?
