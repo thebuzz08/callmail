@@ -412,3 +412,87 @@ npx cap open ios         # Open in Xcode
 - Apple Developer: https://developer.apple.com/account
 - App Store Connect: https://appstoreconnect.apple.com
 - Google Cloud Console: https://console.cloud.google.com
+
+---
+
+# Complete Environment Variables Checklist
+
+These are ALL the environment variables needed for the iOS app to work. Set them in your Vercel project settings.
+
+| Variable | Where to Get It | Required For |
+|----------|----------------|--------------|
+| `APPLE_SHARED_SECRET` | App Store Connect → Your App → App Information → App-Specific Shared Secret → Manage → Generate | In-App Purchase receipt validation |
+| `APNS_KEY_ID` | Apple Developer → Keys → Your APNs key → Key ID (10 characters like `ABC123DEFG`) | Push notifications |
+| `APNS_KEY` | The contents of the .p8 file you downloaded when creating the APNs key. Paste the ENTIRE file including `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----` lines | Push notifications |
+
+**Already Set (verify these exist):**
+| Variable | What It's For |
+|----------|---------------|
+| `GOOGLE_CLIENT_ID` | Google OAuth sign-in |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth sign-in |
+| `TWILIO_ACCOUNT_SID` | Making phone calls |
+| `TWILIO_AUTH_TOKEN` | Making phone calls |
+| `TWILIO_PHONE_NUMBER` | Your Twilio phone number |
+| `STRIPE_SECRET_KEY` | Web subscriptions |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook verification |
+
+---
+
+# What You Do vs What's Automatic
+
+## You Must Do Manually (in Xcode/Apple Portal):
+
+| Task | Why |
+|------|-----|
+| Add app icon (drag PNG into Xcode) | Xcode requires manual asset upload |
+| Configure signing (select Team, Bundle ID) | Xcode requires your Apple account credentials |
+| Add plugin files to Xcode | Xcode doesn't auto-detect Swift files |
+| Add capabilities (IAP, Push, Associated Domains) | Must be done in Xcode UI |
+| Create APNs key and download .p8 file | Apple security requirement |
+| Create Sandbox tester account | For testing purchases |
+| Submit to TestFlight/App Store | Requires manual review info |
+
+## Automatic (already configured):
+
+| Feature | How It Works |
+|---------|--------------|
+| Google Sign-In | Uses web OAuth, works in WebView automatically |
+| In-App Purchases | StoreKit plugin auto-validates with your backend |
+| Push token registration | App sends token to server on first launch |
+| Weekly digest notifications | Cron job runs every Monday at 10am automatically |
+| Subscription status sync | Apple webhooks update your database automatically |
+| Offline detection | App detects connection loss and shows offline screen |
+| Splash screen | Shows automatically on app launch |
+| Analytics | Tracks events automatically via Vercel Analytics |
+
+---
+
+# Files You Added to Xcode (Reference)
+
+When adding plugin files in Step 4.1, you added these 4 files:
+
+**From `ios-plugin/CallMailIAP/`:**
+- `CallMailIAPPlugin.swift` - StoreKit 2 code for purchases
+- `CallMailIAPPlugin.m` - Objective-C bridge for Capacitor
+
+**From `ios-plugin/CallMailPush/`:**
+- `CallMailPushPlugin.swift` - Push notification handling
+- `CallMailPushPlugin.m` - Objective-C bridge for Capacitor
+
+---
+
+# Updating the App After Changes
+
+When you make changes to the web app in v0:
+
+1. Download the new ZIP (or `git pull` if using GitHub)
+2. In Terminal, navigate to your project folder
+3. Run:
+```bash
+npm install
+npx cap sync ios
+npx cap open ios
+```
+4. In Xcode, press **Cmd + R** to build and run
+
+**Note:** You don't need to re-add the plugin files or reconfigure signing - those are saved in the iOS project.
