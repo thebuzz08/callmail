@@ -14,9 +14,18 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground relative">
+      {/* Fixed Background - works on iOS */}
+      <div 
+        className="fixed inset-0 -z-10" 
+        style={{ 
+          backgroundImage: 'url(/backgrounds/texture-grid.jpg)', 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center'
+        }} 
+      />
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center">
             <Image
@@ -63,8 +72,7 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section - Updated H1 and copy for SEO */}
-      <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-grid.jpg)', backgroundAttachment: 'fixed' }}>
-        <div className="absolute inset-0 -z-10 bg-white/80" />
+      <section className="relative py-16 sm:py-28 px-4 sm:px-6 overflow-hidden">
 
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 border border-border bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full text-sm mb-8">
@@ -101,7 +109,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 px-4 sm:px-6 border-y border-border bg-muted/30">
+      <section className="py-12 px-4 sm:px-6 border-y border-border bg-white/60 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
@@ -137,7 +145,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <article className="relative p-8 rounded-3xl border border-border bg-card">
+            <article className="relative p-8 rounded-3xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="absolute -top-4 left-8 bg-foreground text-background w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm">
                 1
               </div>
@@ -151,7 +159,7 @@ export default function HomePage() {
               </p>
             </article>
 
-            <article className="relative p-8 rounded-3xl border border-border bg-card">
+            <article className="relative p-8 rounded-3xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="absolute -top-4 left-8 bg-foreground text-background w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm">
                 2
               </div>
@@ -164,7 +172,7 @@ export default function HomePage() {
               </p>
             </article>
 
-            <article className="relative p-8 rounded-3xl border border-border bg-card">
+            <article className="relative p-8 rounded-3xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="absolute -top-4 left-8 bg-foreground text-background w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm">
                 3
               </div>
@@ -181,8 +189,7 @@ export default function HomePage() {
       </section>
 
       {/* Features - Added keyword-rich H2 and feature descriptions */}
-      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-muted/30 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-diagonal.jpg)', backgroundAttachment: 'fixed' }}>
-        <div className="absolute inset-0 -z-10 bg-muted/40" />
+      <section id="features" className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">Email to Phone Call Features</h2>
@@ -192,7 +199,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Shield className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -204,7 +211,7 @@ export default function HomePage() {
               </div>
             </article>
 
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Clock className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -216,7 +223,7 @@ export default function HomePage() {
               </div>
             </article>
 
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Zap className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -228,7 +235,7 @@ export default function HomePage() {
               </div>
             </article>
 
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Bell className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -244,8 +251,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section - Updated copy for SEO */}
-      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden" style={{ backgroundImage: 'url(/backgrounds/texture-circles.jpg)', backgroundAttachment: 'fixed' }}>
-        <div className="absolute inset-0 -z-10 bg-white/85" />
+      <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold mb-4 tracking-tight">
             Ready to get phone calls for important emails?
@@ -264,7 +270,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-12 px-4 sm:px-6">
+      <footer className="border-t border-border py-12 px-4 sm:px-6 bg-white/60 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <Link href="/" className="flex items-center gap-1">
