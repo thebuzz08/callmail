@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
+    <div className="min-h-screen text-foreground relative">
       {/* Fixed Background - works on iOS */}
       <div 
         className="fixed inset-0 -z-10" 
@@ -25,7 +25,7 @@ export default function HomePage() {
         }} 
       />
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center">
             <Image
@@ -109,7 +109,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 px-4 sm:px-6 border-y border-border">
+      <section className="py-12 px-4 sm:px-6 border-y border-border bg-white/60 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
@@ -145,7 +145,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <article className="relative p-8 rounded-3xl border border-border bg-card">
+            <article className="relative p-8 rounded-3xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="absolute -top-4 left-8 bg-foreground text-background w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm">
                 1
               </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
               </p>
             </article>
 
-            <article className="relative p-8 rounded-3xl border border-border bg-card">
+            <article className="relative p-8 rounded-3xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="absolute -top-4 left-8 bg-foreground text-background w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm">
                 2
               </div>
@@ -172,7 +172,7 @@ export default function HomePage() {
               </p>
             </article>
 
-            <article className="relative p-8 rounded-3xl border border-border bg-card">
+            <article className="relative p-8 rounded-3xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="absolute -top-4 left-8 bg-foreground text-background w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm">
                 3
               </div>
@@ -199,7 +199,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Shield className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -211,7 +211,7 @@ export default function HomePage() {
               </div>
             </article>
 
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Clock className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -223,7 +223,7 @@ export default function HomePage() {
               </div>
             </article>
 
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Zap className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -235,7 +235,7 @@ export default function HomePage() {
               </div>
             </article>
 
-            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-card">
+            <article className="flex items-start gap-5 p-6 rounded-2xl border border-border bg-white/70 backdrop-blur-sm">
               <div className="w-12 h-12 border border-border rounded-xl flex items-center justify-center flex-shrink-0">
                 <Bell className="w-6 h-6" aria-hidden="true" />
               </div>
@@ -270,7 +270,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-12 px-4 sm:px-6">
+      <footer className="border-t border-border py-12 px-4 sm:px-6 bg-white/60 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <Link href="/" className="flex items-center gap-1">
