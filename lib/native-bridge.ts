@@ -115,12 +115,14 @@ export function getPlatform(): "ios" | "android" | "web" {
 // Product IDs for each platform
 export const PRODUCTS = {
   ios: {
-    monthly: "com.callmail.pro.monthly",
-    annual: "com.callmail.pro.annual",
+    monthly: "xyz.callmail.pro.monthly",
+    annual: "xyz.callmail.pro.annual",
+    trial: "xyz.callmail.pro.trial",
   },
   android: {
-    monthly: "com.callmail.pro.monthly",
-    annual: "com.callmail.pro.annual",
+    monthly: "xyz.callmail.pro.monthly",
+    annual: "xyz.callmail.pro.annual",
+    trial: "xyz.callmail.pro.trial",
   },
 }
 

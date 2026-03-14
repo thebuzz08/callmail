@@ -49,7 +49,7 @@ This guide walks you through building the CallMail iOS app with Capacitor, Googl
 
 **First subscription (Monthly):**
 - Reference Name: `CallMail Pro Monthly`
-- Product ID: `com.callmail.pro.monthly`
+- Product ID: `xyz.callmail.pro.monthly`
 - Click **Create**
 - Set **Subscription Duration:** 1 Month
 - Set **Subscription Price:** $6.99 (or choose a price point)
@@ -60,7 +60,7 @@ This guide walks you through building the CallMail iOS app with Capacitor, Googl
 
 **Second subscription (Annual):**
 - Reference Name: `CallMail Pro Annual`
-- Product ID: `com.callmail.pro.annual`
+- Product ID: `xyz.callmail.pro.annual`
 - Click **Create**
 - Set **Subscription Duration:** 1 Year
 - Set **Subscription Price:** $59.99 (or choose a price point)
@@ -397,8 +397,9 @@ Your Team ID (`7N54XHKAPW`) is already used elsewhere in the code.
 **Bundle ID:** `xyz.callmail.app`  
 **Team ID:** `7N54XHKAPW`  
 **Product IDs:**
-- `com.callmail.pro.monthly`
-- `com.callmail.pro.annual`
+- `xyz.callmail.pro.monthly`
+- `xyz.callmail.pro.annual`
+- `xyz.callmail.pro.trial`
 
 **Terminal Commands:**
 ```bash
