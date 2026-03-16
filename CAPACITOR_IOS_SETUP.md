@@ -69,6 +69,18 @@ This guide walks you through building the CallMail iOS app with Capacitor, Googl
   - Description: `Get phone calls for important emails. Unlimited VIP contacts, domains, and keywords. Break through Do Not Disturb. Save 29% with annual billing.`
 - Click **Save**
 
+**Third subscription (Free Trial):**
+- Reference Name: `CallMail Pro Trial`
+- Product ID: `xyz.callmail.pro.trial`
+- Click **Create**
+- Set **Subscription Duration:** 1 Week (7 days)
+- Set **Subscription Price:** Free
+- This is your introductory offer - configure it as a "Free Trial" type
+- Click **Add Localization** → English (U.S.):
+  - Display Name: `CallMail Pro - 7 Day Free Trial`
+  - Description: `Try CallMail Pro free for 7 days. Get phone calls for important emails. Cancel anytime.`
+- Click **Save**
+
 ## Step 1.4: Configure Apple Server Notifications
 
 1. In App Store Connect, click **App Information** in the left sidebar

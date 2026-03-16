@@ -214,6 +214,26 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
             "Continue"
           )}
         </Button>
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          By continuing, you agree to our{" "}
+          <a 
+            href="https://call-mail.xyz/terms" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground"
+          >
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a 
+            href="https://call-mail.xyz/privacy" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground"
+          >
+            Privacy Policy
+          </a>
+        </p>
       </div>
     </div>
   )
