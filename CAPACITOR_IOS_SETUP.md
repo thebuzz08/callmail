@@ -267,6 +267,38 @@ Go to your Vercel project settings and add these environment variables:
 
 Your Team ID (`7N54XHKAPW`) is already used elsewhere in the code.
 
+## Step 6.3: Also Get Apple Shared Secret (For Receipt Validation)
+
+1. Go to https://appstoreconnect.apple.com
+2. Navigate to **Your App** → **App Information**
+3. Scroll down to **App-Specific Shared Secret** section
+4. Click **Manage** → **Generate Shared Secret**
+5. Copy this value
+6. Go to your Vercel project settings and add:
+   - Variable: `APPLE_SHARED_SECRET`
+   - Value: Your shared secret from step 5
+
+---
+
+# Complete Environment Variables Reference
+
+Before you can deploy, make sure these are ALL set in your Vercel project settings:
+
+| Variable | Where to Get It | What It's For |
+|----------|-----------------|--------------|
+| `GOOGLE_CLIENT_ID` | Google Cloud Console → OAuth credentials | Google Sign-In on web/app |
+| `GOOGLE_CLIENT_SECRET` | Google Cloud Console → OAuth credentials | Google Sign-In backend validation |
+| `TWILIO_ACCOUNT_SID` | Twilio Console → Account Settings | Making phone calls for important emails |
+| `TWILIO_AUTH_TOKEN` | Twilio Console → Auth Token | Authentication for Twilio API |
+| `TWILIO_PHONE_NUMBER` | Your Twilio number (e.g., +1234567890) | The phone number that makes calls |
+| `STRIPE_SECRET_KEY` | Stripe Dashboard → API Keys | Web subscription payments |
+| `STRIPE_WEBHOOK_SECRET` | Stripe Dashboard → Webhooks | Webhook signature verification |
+| `APPLE_SHARED_SECRET` | App Store Connect → App Information | iOS app receipt validation |
+| `APNS_KEY_ID` | Apple Developer → Keys → Your APNs Key | Push notification authentication |
+| `APNS_KEY` | The .p8 file you downloaded from Apple | Push notification API access |
+
+**⚠️ CRITICAL:** If ANY of these environment variables are missing, the app will NOT work properly. Double-check all 10 variables before deploying.
+
 ---
 
 # PART 7: Build and Run on Your iPhone
