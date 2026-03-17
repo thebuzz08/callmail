@@ -14,7 +14,7 @@ public class CallMailPushPlugin: CAPPlugin, UNUserNotificationCenterDelegate {
     }
     
     // Request push notification permissions
-    @objc func requestPermissions(_ call: CAPPluginCall) {
+    @objc override public func requestPermissions(_ call: CAPPluginCall) {
         notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
                 call.reject("Permission request failed: \(error.localizedDescription)")
@@ -33,7 +33,7 @@ public class CallMailPushPlugin: CAPPlugin, UNUserNotificationCenterDelegate {
     }
     
     // Check current permission status
-    @objc func checkPermissions(_ call: CAPPluginCall) {
+    @objc override public func checkPermissions(_ call: CAPPluginCall) {
         notificationCenter.getNotificationSettings { settings in
             let granted = settings.authorizationStatus == .authorized
             call.resolve([
