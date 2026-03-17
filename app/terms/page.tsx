@@ -37,7 +37,7 @@ export default function TermsOfServicePage() {
           />
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Terms of Service</h1>
         </div>
-        <p className="mb-4 text-sm text-muted-foreground">Last updated: December 31, 2024</p>
+        <p className="mb-4 text-sm text-muted-foreground">Last updated: March 15, 2026</p>
 
         <div className="space-y-6 text-foreground">
           <section>

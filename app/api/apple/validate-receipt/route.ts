@@ -13,8 +13,9 @@ const APPLE_SHARED_SECRET = process.env.APPLE_SHARED_SECRET
 
 // Your product IDs from App Store Connect
 const VALID_PRODUCT_IDS = [
-  "com.callmail.pro.monthly",
-  "com.callmail.pro.annual",
+  "xyz.callmail.pro.monthly",
+  "xyz.callmail.pro.annual",
+  "xyz.callmail.pro.trial",
 ]
 
 interface AppleReceiptResponse {

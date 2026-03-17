@@ -15,8 +15,9 @@ public class CallMailIAPPlugin: CAPPlugin, CAPBridgedPlugin {
     
     // Product IDs from App Store Connect
     private let productIds = [
-        "com.callmail.pro.monthly",
-        "com.callmail.pro.annual"
+        "xyz.callmail.pro.monthly",
+        "xyz.callmail.pro.annual",
+        "xyz.callmail.pro.trial"
     ]
     
     private var products: [Product] = []

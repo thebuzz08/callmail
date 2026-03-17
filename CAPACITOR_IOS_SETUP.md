@@ -49,7 +49,7 @@ This guide walks you through building the CallMail iOS app with Capacitor, Googl
 
 **First subscription (Monthly):**
 - Reference Name: `CallMail Pro Monthly`
-- Product ID: `com.callmail.pro.monthly`
+- Product ID: `xyz.callmail.pro.monthly`
 - Click **Create**
 - Set **Subscription Duration:** 1 Month
 - Set **Subscription Price:** $6.99 (or choose a price point)
@@ -60,13 +60,25 @@ This guide walks you through building the CallMail iOS app with Capacitor, Googl
 
 **Second subscription (Annual):**
 - Reference Name: `CallMail Pro Annual`
-- Product ID: `com.callmail.pro.annual`
+- Product ID: `xyz.callmail.pro.annual`
 - Click **Create**
 - Set **Subscription Duration:** 1 Year
 - Set **Subscription Price:** $59.99 (or choose a price point)
 - Click **Add Localization** → English (U.S.):
   - Display Name: `CallMail Pro Annual`
   - Description: `Get phone calls for important emails. Unlimited VIP contacts, domains, and keywords. Break through Do Not Disturb. Save 29% with annual billing.`
+- Click **Save**
+
+**Third subscription (Free Trial):**
+- Reference Name: `CallMail Pro Trial`
+- Product ID: `xyz.callmail.pro.trial`
+- Click **Create**
+- Set **Subscription Duration:** 1 Week (7 days)
+- Set **Subscription Price:** Free
+- This is your introductory offer - configure it as a "Free Trial" type
+- Click **Add Localization** → English (U.S.):
+  - Display Name: `CallMail Pro - 7 Day Free Trial`
+  - Description: `Try CallMail Pro free for 7 days. Get phone calls for important emails. Cancel anytime.`
 - Click **Save**
 
 ## Step 1.4: Configure Apple Server Notifications
@@ -397,8 +409,9 @@ Your Team ID (`7N54XHKAPW`) is already used elsewhere in the code.
 **Bundle ID:** `xyz.callmail.app`  
 **Team ID:** `7N54XHKAPW`  
 **Product IDs:**
-- `com.callmail.pro.monthly`
-- `com.callmail.pro.annual`
+- `xyz.callmail.pro.monthly`
+- `xyz.callmail.pro.annual`
+- `xyz.callmail.pro.trial`
 
 **Terminal Commands:**
 ```bash

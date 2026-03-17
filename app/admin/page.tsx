@@ -18,6 +18,7 @@ import {
   ChevronDown,
   AlertTriangle,
   Clock,
+  Trash2,
 } from "lucide-react"
 
 interface VipContact {
@@ -189,6 +190,41 @@ export default function AdminPage() {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
       setLoading(false)
+    }
+  }
+
+  const terminateAccount = async (userId: string, userEmail: string) => {
+    const reason = prompt(`Are you sure you want to PERMANENTLY DELETE this account?\n\nUser: ${userEmail}\n\nThis will delete ALL user data and cannot be undone.\n\nEnter a reason for termination (required):`)
+    
+    if (!reason) {
+      return // User cancelled or didn't provide reason
+    }
+    
+    if (!confirm(`FINAL WARNING: This will permanently delete the account for ${userEmail} and all associated data.\n\nReason: ${reason}\n\nClick OK to proceed.`)) {
+      return
+    }
+    
+    setActionLoading(`terminate-${userId}`)
+    try {
+      const res = await fetch("/api/admin/terminate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, reason }),
+      })
+      
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || "Failed to terminate account")
+      }
+      
+      // Remove user from local state
+      setUsers(users.filter((u) => u.id !== userId))
+      setExpandedUser(null)
+      alert("Account terminated successfully. All user data has been deleted.")
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to terminate account")
+    } finally {
+      setActionLoading(null)
     }
   }
 
@@ -790,6 +826,25 @@ export default function AdminPage() {
                           <>
                             <Ban className="w-4 h-4" />
                             Ban User
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    
+                    {/* Terminate Account - Danger Zone */}
+                    <div className="mt-4 pt-4 border-t border-red-200 dark:border-red-800">
+                      <p className="text-xs text-red-600 dark:text-red-400 mb-2 font-medium">Danger Zone</p>
+                      <button
+                        onClick={() => terminateAccount(user.id, user.email)}
+                        disabled={actionLoading === `terminate-${user.id}`}
+                        className="w-full py-3 rounded-full font-medium transition-colors flex items-center justify-center gap-2 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 border border-red-300 dark:border-red-800 disabled:opacity-50"
+                      >
+                        {actionLoading === `terminate-${user.id}` ? (
+                          <div className="w-5 h-5 border-2 border-red-300 border-t-red-600 rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <Trash2 className="w-4 h-4" />
+                            Terminate Account
                           </>
                         )}
                       </button>
