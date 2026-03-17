@@ -139,7 +139,10 @@ export default function AppPage() {
           setUserPhoneNumber(data.user.phone_number)
         }
         if (data.subscription) {
+          console.log("[v0] Subscription data from API:", data.subscription)
           setSubscription(data.subscription)
+        } else {
+          console.log("[v0] No subscription found in API response")
         }
         if (data.settings) {
           if (data.settings.theme) {
@@ -486,6 +489,9 @@ export default function AppPage() {
     (subscription.status === "canceled" && subscription.current_period_end &&
       new Date(subscription.current_period_end) > new Date())
   )
+  
+  // Debug log for subscription status
+  console.log("[v0] Subscription state:", { subscription, hasActiveSubscription })
 
   if (isLoading && currentScreen === "dashboard") {
     return (
