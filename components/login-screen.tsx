@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Loader2, Check } from "lucide-react"
 import type { UserSession } from "@/app/app/page"
-// Native bridge imports removed - using simple redirect for OAuth
+import { Capacitor } from "@capacitor/core"
 
 interface LoginScreenProps {
   onNext: (session: UserSession) => void
@@ -90,9 +90,21 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
       const data = await res.json()
 
       if (data.url) {
-        // Redirect to Google OAuth - works in both web and Capacitor WebView
-        // Google OAuth will redirect back to /api/auth/callback/google which handles the rest
-        window.location.href = data.url
+        // Check if running in native app
+        if (Capacitor.isNativePlatform()) {
+          // Use Capacitor Browser plugin - opens ASWebAuthenticationSession
+          // This is allowed by Google unlike embedded WebViews
+          const { Browser } = await import("@capacitor/browser")
+          await Browser.open({ 
+            url: data.url,
+            presentationStyle: "popover" 
+          })
+          // The callback URL will redirect back to the app via Universal Links
+          // Keep loading state - user will return after auth
+        } else {
+          // Web: normal redirect
+          window.location.href = data.url
+        }
       } else {
         setError("Failed to initiate Google login")
         setIsLoading(false)
