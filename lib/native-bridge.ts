@@ -62,9 +62,18 @@ export function isNativeApp(): boolean {
   return false
 }
 
-// Open URL using Median's openExternal (opens in system browser, can return via Universal Links)
-export function openExternalUrl(url: string): void {
+// Open URL in system browser (for OAuth flows that need to return via Universal Links)
+export async function openExternalUrl(url: string): Promise<void> {
   if (typeof window === "undefined") return
+  
+  // Try Capacitor Browser plugin first (opens Safari, allows return via Universal Links)
+  try {
+    const { Browser } = await import("@capacitor/browser")
+    await Browser.open({ url, presentationStyle: "popover" })
+    return
+  } catch (e) {
+    // Browser plugin not available
+  }
   
   // Median.co API for opening external URLs
   if ((window as any).median?.share?.open) {
