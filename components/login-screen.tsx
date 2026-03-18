@@ -93,7 +93,7 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
         // For native apps, open in system browser so Google OAuth works properly
         // The callback will redirect back and Universal Links will return to the app
         if (isNativeApp()) {
-          openExternalUrl(data.url)
+          await openExternalUrl(data.url)
         } else {
           // Web: normal redirect
           window.location.href = data.url
