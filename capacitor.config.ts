@@ -5,10 +5,11 @@ const config: CapacitorConfig = {
   appName: "CallMail",
   webDir: "out",
   server: {
-    // Use live URL so OAuth, cookies, and API calls work properly
-    url: "https://call-mail.xyz",
+    // Use your Vercel preview URL for testing
+    // Change this to https://call-mail.xyz when ready for production
+    url: "https://callmail-git-main-thebuzz08s-projects.vercel.app",
     // Allow navigation to external URLs (for OAuth)
-    allowNavigation: ["accounts.google.com", "*.google.com"],
+    allowNavigation: ["accounts.google.com", "*.google.com", "*.vercel.app"],
   },
   ios: {
     scheme: "CallMail",
