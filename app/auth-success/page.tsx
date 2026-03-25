@@ -2,31 +2,45 @@
 
 import { useEffect } from "react"
 import { Loader2 } from "lucide-react"
+import { Capacitor } from "@capacitor/core"
 
 export default function AuthSuccessPage() {
   useEffect(() => {
-    // This page is shown after OAuth completes in the Safari popup
-    // We need to close the popup and return to the app
-    
-    // Try to close the Safari View Controller by navigating to a custom scheme
-    // or just redirect to the app - the cookies are already set
-    
-    // For Capacitor apps, we can try to trigger a return
-    const returnToApp = () => {
-      // First, try to use postMessage to communicate with the app
-      if (window.opener) {
-        window.opener.postMessage({ type: "auth-success" }, "*")
-        window.close()
-        return
+    const closeAuthPopup = async () => {
+      // Wait for auth cookie to be set
+      await new Promise(resolve => setTimeout(resolve, 800))
+
+      console.log("[v0] Auth successful - closing popup")
+
+      if (Capacitor.isNativePlatform()) {
+        try {
+          // Use Capacitor Browser to close the SFSafariViewController popup
+          const { Browser } = await import("@capacitor/browser")
+          console.log("[v0] Calling Browser.close()")
+          await Browser.close()
+          console.log("[v0] Browser closed successfully")
+        } catch (error) {
+          console.error("[v0] Browser.close() failed:", error)
+          // Fallback: try window.close()
+          try {
+            window.close()
+          } catch (e) {
+            // If close fails, redirect to app
+            window.location.href = "https://call-mail.xyz/app"
+          }
+        }
+      } else {
+        // Web: close popup window if opened as popup
+        if (window.opener) {
+          window.close()
+        } else {
+          // Regular navigation - redirect to app
+          window.location.href = "https://call-mail.xyz/app"
+        }
       }
-      
-      // For SFSafariViewController, we redirect to the app URL
-      // The Capacitor app will intercept this via its WebView
-      window.location.href = "https://call-mail.xyz/app?auth=success"
     }
-    
-    // Small delay to ensure cookies are set
-    setTimeout(returnToApp, 500)
+
+    closeAuthPopup()
   }, [])
 
   return (

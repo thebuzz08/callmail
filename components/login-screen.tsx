@@ -54,8 +54,35 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
         setIsLoading(false)
       }
       window.history.replaceState({}, "", window.location.pathname)
+    } else if (isLoading) {
+      // We were loading but returned without a code - check if auth succeeded anyway
+      // This happens when Browser plugin closes and returns to app
+      console.log("[v0] Browser popup closed - checking if authenticated")
+      await new Promise(resolve => setTimeout(resolve, 300)) // Wait for cookies to settle
+      
+      try {
+        const res = await fetch("/api/user/data")
+        if (res.ok) {
+          const data = await res.json()
+          if (data.user) {
+            console.log("[v0] User authenticated after OAuth:", data.user.email)
+            onNext({
+              email: data.user.email,
+              name: data.user.name,
+            })
+          } else {
+            setIsLoading(false)
+            setError("Authentication failed. Please try again.")
+          }
+        } else {
+          setIsLoading(false)
+        }
+      } catch (err) {
+        console.log("[v0] Auth check error:", err)
+        setIsLoading(false)
+      }
     }
-  }, [onNext])
+  }, [onNext, isLoading])
 
   useEffect(() => {
     checkForAuthCallback()
