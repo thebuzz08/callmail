@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
 import { Mail, Phone, Bell, Shield, Clock, Zap, ArrowRight } from "lucide-react"
+import { redirect } from "next/navigation"
+import { headers } from "next/headers"
 
 export const metadata: Metadata = {
   title: "CallMail - Get a Phone Call When You Receive an Important Email",
@@ -12,7 +14,17 @@ export const metadata: Metadata = {
   },
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Detect native app by checking for Capacitor user agent
+  const headersList = await headers()
+  const userAgent = headersList.get("user-agent") || ""
+  const isNativeApp = userAgent.includes("Capacitor") || userAgent.includes("CallMail")
+  
+  // Redirect native apps directly to the app page
+  if (isNativeApp) {
+    redirect("/app")
+  }
+  
   return (
     <div className="min-h-screen text-foreground relative">
       {/* Fixed Background - works on iOS */}

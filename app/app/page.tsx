@@ -486,12 +486,18 @@ export default function AppPage() {
   const hasActiveSubscription = subscription && (
     subscription.status === "active" ||
     subscription.status === "trialing" ||
+    subscription.status === "incomplete" || // Add incomplete for payment processing
     (subscription.status === "canceled" && subscription.current_period_end &&
       new Date(subscription.current_period_end) > new Date())
   )
   
   // Debug log for subscription status
-  console.log("[v0] Subscription state:", { subscription, hasActiveSubscription })
+  console.log("[v0] Subscription state:", { 
+    subscription, 
+    hasActiveSubscription,
+    status: subscription?.status,
+    current_period_end: subscription?.current_period_end
+  })
 
   if (isLoading && currentScreen === "dashboard") {
     return (

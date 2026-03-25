@@ -264,16 +264,23 @@ public class CallMailIAPPlugin: CAPPlugin, CAPBridgedPlugin {
         
         let receiptString = receiptData.base64EncodedString()
         
-        // Get the web view's URL to determine the backend
-        guard let bridge = self.bridge,
-              let webView = bridge.webView,
-              let url = webView.url,
-              let host = url.host else {
+        // Get the web view's URL on the main actor
+        let urlInfo: (scheme: String, host: String, url: URL)? = await MainActor.run {
+            guard let bridge = self.bridge,
+                  let webView = bridge.webView,
+                  let url = webView.url,
+                  let host = url.host else {
+                return nil
+            }
+            return (scheme: url.scheme ?? "https", host: host, url: url)
+        }
+        
+        guard let info = urlInfo else {
             print("[CallMailIAP] Could not determine backend URL")
             return
         }
         
-        let backendURL = "\(url.scheme ?? "https")://\(host)/api/apple/validate-receipt"
+        let backendURL = "\(info.scheme)://\(info.host)/api/apple/validate-receipt"
         
         guard let requestURL = URL(string: backendURL) else {
             print("[CallMailIAP] Invalid backend URL")
@@ -285,9 +292,7 @@ public class CallMailIAPPlugin: CAPPlugin, CAPBridgedPlugin {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Get session cookie from web view
-        let cookies = await MainActor.run {
-            return HTTPCookieStorage.shared.cookies(for: url) ?? []
-        }
+        let cookies = HTTPCookieStorage.shared.cookies(for: info.url) ?? []
         let cookieHeader = cookies.map { "\($0.name)=\($0.value)" }.joined(separator: "; ")
         request.setValue(cookieHeader, forHTTPHeaderField: "Cookie")
         

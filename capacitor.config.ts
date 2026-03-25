@@ -5,10 +5,10 @@ const config: CapacitorConfig = {
   appName: "CallMail",
   webDir: "out",
   server: {
-    // Use live URL so OAuth, cookies, and API calls work properly
-    url: "https://call-mail.xyz",
+    // Point directly to /app for native app users
+    url: "https://call-mail.xyz/app",
     // Allow navigation to external URLs (for OAuth)
-    allowNavigation: ["accounts.google.com", "*.google.com"],
+    allowNavigation: ["accounts.google.com", "*.google.com", "call-mail.xyz"],
   },
   ios: {
     scheme: "CallMail",

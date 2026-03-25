@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Loader2, Check } from "lucide-react"
 import type { UserSession } from "@/app/app/page"
-import { isNativeApp, openExternalUrl } from "@/lib/native-bridge"
+import { Capacitor } from "@capacitor/core"
 
 interface LoginScreenProps {
   onNext: (session: UserSession) => void
@@ -90,10 +90,27 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
       const data = await res.json()
 
       if (data.url) {
-        // For native apps, open in system browser so Google OAuth works properly
-        // The callback will redirect back and Universal Links will return to the app
-        if (isNativeApp()) {
-          openExternalUrl(data.url)
+        console.log("[v0] Got OAuth URL:", data.url)
+        console.log("[v0] Is native platform:", Capacitor.isNativePlatform())
+        
+        // Check if running in native app
+        if (Capacitor.isNativePlatform()) {
+          try {
+            console.log("[v0] Attempting to open Browser plugin...")
+            // Use Capacitor Browser plugin - opens ASWebAuthenticationSession
+            const { Browser } = await import("@capacitor/browser")
+            console.log("[v0] Browser plugin loaded, opening URL...")
+            await Browser.open({ 
+              url: data.url,
+              presentationStyle: "popover" 
+            })
+            console.log("[v0] Browser.open() completed")
+          } catch (browserError) {
+            console.log("[v0] Browser plugin failed:", browserError)
+            // Fallback: try window.open
+            console.log("[v0] Trying window.open fallback...")
+            window.open(data.url, "_blank")
+          }
         } else {
           // Web: normal redirect
           window.location.href = data.url
