@@ -90,17 +90,27 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
       const data = await res.json()
 
       if (data.url) {
+        console.log("[v0] Got OAuth URL:", data.url)
+        console.log("[v0] Is native platform:", Capacitor.isNativePlatform())
+        
         // Check if running in native app
         if (Capacitor.isNativePlatform()) {
-          // Use Capacitor Browser plugin - opens ASWebAuthenticationSession
-          // This is allowed by Google unlike embedded WebViews
-          const { Browser } = await import("@capacitor/browser")
-          await Browser.open({ 
-            url: data.url,
-            presentationStyle: "popover" 
-          })
-          // The callback URL will redirect back to the app via Universal Links
-          // Keep loading state - user will return after auth
+          try {
+            console.log("[v0] Attempting to open Browser plugin...")
+            // Use Capacitor Browser plugin - opens ASWebAuthenticationSession
+            const { Browser } = await import("@capacitor/browser")
+            console.log("[v0] Browser plugin loaded, opening URL...")
+            await Browser.open({ 
+              url: data.url,
+              presentationStyle: "popover" 
+            })
+            console.log("[v0] Browser.open() completed")
+          } catch (browserError) {
+            console.log("[v0] Browser plugin failed:", browserError)
+            // Fallback: try window.open
+            console.log("[v0] Trying window.open fallback...")
+            window.open(data.url, "_blank")
+          }
         } else {
           // Web: normal redirect
           window.location.href = data.url
