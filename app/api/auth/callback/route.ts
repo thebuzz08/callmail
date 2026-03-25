@@ -244,8 +244,9 @@ export async function GET(request: Request) {
       name: userData.name,
     })
 
-    const redirectUrl = new URL("https://call-mail.xyz/app")
-    redirectUrl.searchParams.set("auth", "success")
+    // Redirect to auth-success page which will close the browser popup
+    // and return to the app with cookies set
+    const redirectUrl = new URL("https://call-mail.xyz/auth-success")
 
     const response = NextResponse.redirect(redirectUrl)
 
