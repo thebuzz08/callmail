@@ -65,8 +65,13 @@ export default function AppPage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search)
       const code = params.get("code")
+      const authToken = params.get("auth_token")
       const clientCookie = getCookie("callmail_client")
 
+      // If we have an auth_token from native OAuth flow, we need to exchange it
+      if (authToken) {
+        return "login" // Show login screen while exchanging token
+      }
       if (code) {
         return "login"
       }
@@ -77,6 +82,40 @@ export default function AppPage() {
     // Start with intro screen for new users (shows login + app info)
     return "intro"
   })
+  
+  // Handle native app auth token exchange
+  useEffect(() => {
+    const exchangeNativeToken = async () => {
+      if (typeof window === "undefined") return
+      
+      const params = new URLSearchParams(window.location.search)
+      const authToken = params.get("auth_token")
+      
+      if (!authToken) return
+      
+      try {
+        // Exchange the one-time token for session cookies in this WKWebView context
+        const res = await fetch(`/api/auth/native-token?token=${authToken}`)
+        const data = await res.json()
+        
+        if (data.success) {
+          // Clear the token from URL and reload to apply cookies
+          window.history.replaceState({}, "", "/app")
+          window.location.reload()
+        } else {
+          console.error("Token exchange failed:", data.error)
+          window.history.replaceState({}, "", "/app?error=token_exchange_failed")
+          setCurrentScreen("intro")
+        }
+      } catch (error) {
+        console.error("Native auth token exchange error:", error)
+        window.history.replaceState({}, "", "/app?error=auth_failed")
+        setCurrentScreen("intro")
+      }
+    }
+    
+    exchangeNativeToken()
+  }, [])
   const [watchedEmails, setWatchedEmails] = useState<VipContact[]>([])
   const [watchedDomains, setWatchedDomains] = useState<VipDomain[]>([])
   const [watchedKeywords, setWatchedKeywords] = useState<Keyword[]>([])

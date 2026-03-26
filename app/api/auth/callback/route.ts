@@ -244,9 +244,29 @@ export async function GET(request: Request) {
       name: userData.name,
     })
 
-    // Redirect to auth-success page which will close the browser popup
-    // and return to the app with cookies set
+    // Generate a one-time token for native app authentication
+    // This allows the WKWebView to establish its own session cookies
+    const crypto = await import("crypto")
+    const nativeToken = crypto.randomBytes(32).toString("hex")
+    
+    // Store token temporarily (we'll use a simple in-memory store via the native-token API)
+    // The auth-success page will use this token to set cookies in the WKWebView context
+    await fetch("https://call-mail.xyz/api/auth/native-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        email: userData.email,
+        name: userData.name,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        token: nativeToken,
+      }),
+    }).catch(err => console.error("Failed to store native token:", err))
+
+    // Redirect to auth-success page with the token
     const redirectUrl = new URL("https://call-mail.xyz/auth-success")
+    redirectUrl.searchParams.set("token", nativeToken)
 
     const response = NextResponse.redirect(redirectUrl)
 
