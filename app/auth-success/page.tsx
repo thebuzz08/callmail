@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { Loader2 } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 
-export default function AuthSuccessPage() {
+function AuthSuccessContent() {
   const searchParams = useSearchParams()
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
 
@@ -42,5 +42,19 @@ export default function AuthSuccessPage() {
         {status === "error" && "Redirecting back to try again..."}
       </p>
     </div>
+  )
+}
+
+export default function AuthSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <h1 className="text-xl font-semibold mb-2">Signing you in...</h1>
+        <p className="text-muted-foreground text-center">Please wait...</p>
+      </div>
+    }>
+      <AuthSuccessContent />
+    </Suspense>
   )
 }

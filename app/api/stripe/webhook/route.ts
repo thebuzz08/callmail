@@ -1,3 +1,4 @@
+// Stripe webhook handler for subscription events
 import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { createClient } from "@supabase/supabase-js"
@@ -11,6 +12,7 @@ const supabaseAdmin = createClient(
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 export async function POST(request: Request) {
+  console.log("[v0] Stripe webhook received")
   const body = await request.text()
   const signature = request.headers.get("stripe-signature")!
 
