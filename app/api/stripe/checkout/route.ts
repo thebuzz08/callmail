@@ -8,8 +8,8 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-const MONTHLY_PRICE_ID = "price_1T7HWkGpTW6qdzR3n3unzrCm"
-const ANNUAL_PRICE_ID = "price_1T7o9uGpTW6qdzR3P8JCM5Sb"
+const MONTHLY_PRICE_ID = "price_1TIBrDK3zOiXqdF9ecNa1O1R"
+const ANNUAL_PRICE_ID = "price_1TIBraK3zOiXqdF93K2CKrpG"
 
 export async function POST(request: Request) {
   try {
@@ -85,6 +85,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: checkoutSession.url })
   } catch (error) {
     console.error("Checkout error:", error)
-    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    return NextResponse.json({ error: `Failed to create checkout session: ${errorMessage}` }, { status: 500 })
   }
 }
