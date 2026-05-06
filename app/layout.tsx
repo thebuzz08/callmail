@@ -123,10 +123,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  if (typeof window !== "undefined") {
-    ;(window as any).__SUPPRESS_GOTRUE_WARNING__ = true
-  }
-
   return (
     <html lang="en">
       <head>

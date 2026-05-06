@@ -8,8 +8,11 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-const MONTHLY_PRICE_ID = "price_1TIBrDK3zOiXqdF9ecNa1O1R"
-const ANNUAL_PRICE_ID = "price_1TIBraK3zOiXqdF93K2CKrpG"
+// Prefer env vars so test/live keys can use different price IDs without code changes.
+// Falls back to test mode price IDs if env vars are not set.
+const MONTHLY_PRICE_ID = process.env.STRIPE_MONTHLY_PRICE_ID || "price_1TIBrDK3zOiXqdF9ecNa1O1R"
+const ANNUAL_PRICE_ID = process.env.STRIPE_ANNUAL_PRICE_ID || "price_1TIBraK3zOiXqdF93K2CKrpG"
+const APP_URL = process.env.NEXT_PUBLIC_URL || "https://call-mail.xyz"
 
 export async function POST(request: Request) {
   try {
@@ -77,8 +80,8 @@ export async function POST(request: Request) {
         trial_period_days: 7,
         metadata: { userId },
       },
-      success_url: `https://call-mail.xyz/app?subscription=success`,
-      cancel_url: `https://call-mail.xyz/app?subscription=cancelled`,
+      success_url: `${APP_URL}/app?subscription=success`,
+      cancel_url: `${APP_URL}/app?subscription=cancelled`,
       metadata: { userId },
     })
 

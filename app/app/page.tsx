@@ -178,10 +178,7 @@ export default function AppPage() {
           setUserPhoneNumber(data.user.phone_number)
         }
         if (data.subscription) {
-          console.log("[v0] Subscription data from API:", data.subscription)
           setSubscription(data.subscription)
-        } else {
-          console.log("[v0] No subscription found in API response")
         }
         if (data.settings) {
           if (data.settings.theme) {
@@ -257,21 +254,14 @@ export default function AppPage() {
               }
             } else {
               // Only clear session if server explicitly says it's invalid
-              // (not on network errors or other issues)
-              console.log("[v0] Session invalid, clearing:", data.error)
               session = null
             }
           } else if (response.status === 401) {
-            // Explicit auth failure - clear session
-            console.log("[v0] Session expired (401), clearing")
             session = null
           }
           // On other errors (500, network), keep the session and try anyway
-          // The API calls will fail gracefully if the token is actually invalid
-        } catch (e) {
+        } catch {
           // Network error - don't log out, just continue with existing session
-          // User may just have spotty connection
-          console.log("[v0] Session check failed (network), continuing with cached session")
         }
       }
 
@@ -289,12 +279,11 @@ export default function AppPage() {
         await fetchUserData()
         
         // Register for push notifications (if on iOS/Android app)
-        registerPushToken().catch(e => console.error("[v0] Push token registration failed:", e))
+        registerPushToken().catch(e => console.error("Push token registration failed:", e))
         
         // If returning from successful checkout, poll for subscription update
         // (webhook may take a moment to process)
         if (subscriptionSuccess) {
-          console.log("[v0] Polling for subscription status after checkout...")
           let attempts = 0
           const maxAttempts = 10
           const pollInterval = setInterval(async () => {
@@ -304,16 +293,14 @@ export default function AppPage() {
               if (res.ok) {
                 const data = await res.json()
                 if (data.subscription && (data.subscription.status === "active" || data.subscription.status === "trialing")) {
-                  console.log("[v0] Subscription found:", data.subscription.status)
                   setSubscription(data.subscription)
                   clearInterval(pollInterval)
                 }
               }
             } catch (e) {
-              console.error("[v0] Poll error:", e)
+              console.error("Poll error:", e)
             }
             if (attempts >= maxAttempts) {
-              console.log("[v0] Max poll attempts reached")
               clearInterval(pollInterval)
             }
           }, 2000) // Poll every 2 seconds
@@ -529,14 +516,6 @@ export default function AppPage() {
     (subscription.status === "canceled" && subscription.current_period_end &&
       new Date(subscription.current_period_end) > new Date())
   )
-  
-  // Debug log for subscription status
-  console.log("[v0] Subscription state:", { 
-    subscription, 
-    hasActiveSubscription,
-    status: subscription?.status,
-    current_period_end: subscription?.current_period_end
-  })
 
   if (isLoading && currentScreen === "dashboard") {
     return (
